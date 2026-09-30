@@ -1,0 +1,13 @@
+feature,iv,strength
+delinq_90d_2y,0.4296,强(0.3-0.5)
+delinq_30d_2y,0.1724,中(0.1-0.3)
+debt_ratio,0.1236,中(0.1-0.3)
+credit_score,0.0715,弱(0.02-0.1)
+utilization,0.0497,弱(0.02-0.1)
+inquiry_6m,0.0481,弱(0.02-0.1)
+monthly_income,0.0462,弱(0.02-0.1)
+age,0.024,弱(0.02-0.1)
+employment_years,0.0113,无用(<0.02)
+credit_history_months,0.0013,无用(<0.02)
+loan_amount,0.0008,无用(<0.02)
+num_open_accounts,0.0001,无用(<0.02)
