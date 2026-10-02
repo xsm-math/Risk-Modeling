@@ -1,0 +1,9 @@
+{
+  "seed": 20261002,
+  "bootstrap_repeats": 500,
+  "cost_ratios": [1, 2, 5, 10, 20.5],
+  "primary_cost_ratio": 5,
+  "approval_targets": [0.5, 0.6, 0.7, 0.8, 0.9],
+  "lr_C": 1.0,
+  "tree": {"max_iter": 150, "max_leaf_nodes": 15, "learning_rate": 0.06, "l2_regularization": 3.0, "min_samples_leaf": 40}
+}

@@ -1,0 +1,156 @@
+{
+  "model": "hist_gbdt",
+  "criterion": "minimum validation log_loss; model name breaks ties",
+  "primary_cost_ratio": 5,
+  "threshold": 0.1664136724636875,
+  "policy_specs": [
+    {
+      "policy": "validation_min_cost",
+      "ratio": 1,
+      "threshold": 0.5336303489139184
+    },
+    {
+      "policy": "probability_cost_rule",
+      "ratio": 1,
+      "threshold": 0.5
+    },
+    {
+      "policy": "threshold_0.5",
+      "ratio": 1,
+      "threshold": 0.5
+    },
+    {
+      "policy": "approve_all",
+      "ratio": 1,
+      "threshold": 1.0
+    },
+    {
+      "policy": "reject_all",
+      "ratio": 1,
+      "threshold": 0.0
+    },
+    {
+      "policy": "validation_min_cost",
+      "ratio": 2,
+      "threshold": 0.31744941942158655
+    },
+    {
+      "policy": "probability_cost_rule",
+      "ratio": 2,
+      "threshold": 0.3333333333333333
+    },
+    {
+      "policy": "threshold_0.5",
+      "ratio": 2,
+      "threshold": 0.5
+    },
+    {
+      "policy": "approve_all",
+      "ratio": 2,
+      "threshold": 1.0
+    },
+    {
+      "policy": "reject_all",
+      "ratio": 2,
+      "threshold": 0.0
+    },
+    {
+      "policy": "validation_min_cost",
+      "ratio": 5,
+      "threshold": 0.1664136724636875
+    },
+    {
+      "policy": "probability_cost_rule",
+      "ratio": 5,
+      "threshold": 0.16666666666666666
+    },
+    {
+      "policy": "threshold_0.5",
+      "ratio": 5,
+      "threshold": 0.5
+    },
+    {
+      "policy": "approve_all",
+      "ratio": 5,
+      "threshold": 1.0
+    },
+    {
+      "policy": "reject_all",
+      "ratio": 5,
+      "threshold": 0.0
+    },
+    {
+      "policy": "validation_min_cost",
+      "ratio": 10,
+      "threshold": 0.10465501197460558
+    },
+    {
+      "policy": "probability_cost_rule",
+      "ratio": 10,
+      "threshold": 0.09090909090909091
+    },
+    {
+      "policy": "threshold_0.5",
+      "ratio": 10,
+      "threshold": 0.5
+    },
+    {
+      "policy": "approve_all",
+      "ratio": 10,
+      "threshold": 1.0
+    },
+    {
+      "policy": "reject_all",
+      "ratio": 10,
+      "threshold": 0.0
+    },
+    {
+      "policy": "validation_min_cost",
+      "ratio": 20.5,
+      "threshold": 0.05610327408238114
+    },
+    {
+      "policy": "probability_cost_rule",
+      "ratio": 20.5,
+      "threshold": 0.046511627906976744
+    },
+    {
+      "policy": "threshold_0.5",
+      "ratio": 20.5,
+      "threshold": 0.5
+    },
+    {
+      "policy": "approve_all",
+      "ratio": 20.5,
+      "threshold": 1.0
+    },
+    {
+      "policy": "reject_all",
+      "ratio": 20.5,
+      "threshold": 0.0
+    }
+  ],
+  "approval_specs": [
+    {
+      "target_approval": 0.5,
+      "threshold": 0.1520802076685767
+    },
+    {
+      "target_approval": 0.6,
+      "threshold": 0.18827889483437493
+    },
+    {
+      "target_approval": 0.7,
+      "threshold": 0.23540373088085872
+    },
+    {
+      "target_approval": 0.8,
+      "threshold": 0.32706837178589376
+    },
+    {
+      "target_approval": 0.9,
+      "threshold": 0.5512084521852669
+    }
+  ],
+  "config_sha256": "063a65e3409a46f584af3948c5cdbc35b6b60293fdcdf4cfb4d8f0121695d3aa"
+}

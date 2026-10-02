@@ -6,3 +6,10 @@ __pycache__/
 data/raw/*.csv
 data/processed/
 outputs/predictions.csv
+
+data/raw/*.zip
+data/raw/*.xls
+artifacts/
+reports/generated/
+predictions.csv
+customers.csv
