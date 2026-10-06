@@ -1,7 +1,12 @@
-# Real-data experiment protocol
+# Real-data experiment protocol: 2026-10-06 extension
 
 This protocol is implemented in `src/credit/`, with fixed settings in `configs/credit.json`.
 The original NumPy simulation remains a separate study (`python -m src.train`).
+
+This extension reuses the published 2026-10-02 cohort and split for continuity.
+It is not a new untouched external holdout. Runtime pins are preserved because
+grouped partition assignments can differ between library versions. New model
+capacities are fixed before evaluating the extension.
 
 ## Scope
 
@@ -20,7 +25,7 @@ rejecting customers and does not estimate realized bank profit.
    `StratifiedGroupKFold` uses labels to balance folds, not to learn predictors.
 5. Fit WOE, scaling and estimators only on training. No supervised feature selection.
 6. Fit logit-sigmoid calibration only on calibration. No base-estimator refit.
-7. Choose among six fixed candidates by validation log loss; break ties by name.
+7. Choose among twelve fixed candidates by validation log loss; break ties by name.
 8. Choose cost thresholds and target-approval cutoffs using validation only. Save
    `selection.json` before obtaining test predictions and computing test metrics.
 9. Evaluate all frozen candidates on test for transparent comparison, without
@@ -44,6 +49,13 @@ No IID customer split can substitute for time-out-of-sample validation.
 - Each model also has a separate sigmoid-calibrated variant. Calibration is a
   one-variable logistic regression on clipped base logits, C=1e6. The slight
   regularization and clipping mean it is not an unpenalized analytic transform.
+- Balanced linear LR: same preprocessing with class_weight=balanced as an ablation.
+- Random Forest: 250 trees, max depth 10, min leaf 30, sqrt feature subsampling,
+  balanced_subsample weights. Raw weighted PD requires a calibration quality check.
+- XGBoost: 250 trees, depth 3, rate .04, min child weight 30, row/column sampling .85,
+  L2=5 and scale_pos_weight=1. Probability loss is prioritized over default reweighting.
+- No oversampling; cost threshold strategy and weighting ablations are compared on
+  the same four parts. Raw and sigmoid variants are retained even when worse.
 - Constant prior probabilities estimated from training provide a no-feature baseline.
 
 ## Decisions
@@ -69,11 +81,39 @@ Correlated derived features and out-of-distribution permutations limit interpret
 Score PSI compares calibration and test with calibration-fixed quantile edges and
 half-count smoothing. It is not temporal drift evidence.
 
+The extension additionally computes all feature and selected-score PSI with
+training-fixed bins; status features use categorical buckets, including unknown
+and missing states. A separate simulated shift uses LIMIT_BAL x0.7 and increments
+nonnegative PAY_0 by one, capped at 8, then recomputes all derived features. It has
+no new labels and is not OOT accuracy evidence. PSI .1/.25 triggers are heuristics.
+
+WOE coefficients are restored to original WOE units and translated to additive
+points (base score 600, good:bad odds 20:1, PDO 20). Unrounded bin-point sums must
+reconstruct raw WOE PD at absolute tolerance 1e-12. IV is exported, not used to
+select inputs. Missing values use train medians; monotonicity is not constrained.
+Each original interval is exported even when adjacent intervals share merged WOE.
+
+Validation-only permutation explanation retains repeat variability. RF impurity
+and XGBoost gain importance are model-specific. Native exact TreeSHAP explains
+512 XGBoost validation records in raw log-odds space with checked additivity;
+it does not explain a different selected model or its calibrated probability.
+
+AP and trapezoidal PR-AUC are reported separately. Tied constant scores illustrate
+why trapezoidal PR interpolation can be misleading; AP is the headline PR measure.
+Confusion counts, precision, recall and F1 are tied to stated thresholds.
+
+The SQLite behavior query runs on real six-period histories. Five shared features
+are compared with Python on all 30,000 rows at 1e-12. Three-period outputs are SQL
+demonstrations, not additional silent model inputs. Account age is unavailable.
+
 ## Reproduction and provenance
 
 Raw files, row-level split manifests/predictions and joblib artifacts stay local.
 The published manifest records dataset, config and split hashes plus runtime versions.
 The current run exports and reloads the model to verify prediction equivalence.
+The manifest also records quality, scorecard/SQL parity and native SHAP checks.
+`python scripts/run_all.py` regenerates results, README and career numbers together.
+See `docs/monitoring.md` for implemented diagnostics and proposed production monitoring.
 If a source checksum changes, stop and review provenance rather than silently accept it.
 Subsequent experiments must be labelled as revisions; repeated tuning against the
 published test results would invalidate its status as an untouched holdout.

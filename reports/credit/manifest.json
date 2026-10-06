@@ -39,18 +39,18 @@
   "pandas": "2.2.3",
   "sklearn": "1.8.0",
   "bootstrap_repeats": 500,
-  "test_score_psi_vs_calibration": 0.0028939103559789273,
-  "artifact_roundtrip_max_error": 0.0,
+  "test_score_psi_vs_calibration": 0.008152922438451995,
+  "artifact_roundtrip_max_error": 1.1102230246251565e-16,
   "selection": {
-    "model": "hist_gbdt",
+    "model": "random_forest_sigmoid",
     "criterion": "minimum validation log_loss; model name breaks ties",
     "primary_cost_ratio": 5,
-    "threshold": 0.1664136724636875,
+    "threshold": 0.17143843744366105,
     "policy_specs": [
       {
         "policy": "validation_min_cost",
         "ratio": 1,
-        "threshold": 0.5336303489139184
+        "threshold": 0.414821883192509
       },
       {
         "policy": "probability_cost_rule",
@@ -75,7 +75,7 @@
       {
         "policy": "validation_min_cost",
         "ratio": 2,
-        "threshold": 0.31744941942158655
+        "threshold": 0.26141361386771655
       },
       {
         "policy": "probability_cost_rule",
@@ -100,7 +100,7 @@
       {
         "policy": "validation_min_cost",
         "ratio": 5,
-        "threshold": 0.1664136724636875
+        "threshold": 0.17143843744366105
       },
       {
         "policy": "probability_cost_rule",
@@ -125,7 +125,7 @@
       {
         "policy": "validation_min_cost",
         "ratio": 10,
-        "threshold": 0.10465501197460558
+        "threshold": 0.08957103491876472
       },
       {
         "policy": "probability_cost_rule",
@@ -150,7 +150,7 @@
       {
         "policy": "validation_min_cost",
         "ratio": 20.5,
-        "threshold": 0.05610327408238114
+        "threshold": 0.06178919882131392
       },
       {
         "policy": "probability_cost_rule",
@@ -176,43 +176,125 @@
     "approval_specs": [
       {
         "target_approval": 0.5,
-        "threshold": 0.1520802076685767
+        "threshold": 0.15185034768906583
       },
       {
         "target_approval": 0.6,
-        "threshold": 0.18827889483437493
+        "threshold": 0.18249513771212186
       },
       {
         "target_approval": 0.7,
-        "threshold": 0.23540373088085872
+        "threshold": 0.2281329567157049
       },
       {
         "target_approval": 0.8,
-        "threshold": 0.32706837178589376
+        "threshold": 0.3521921032450713
       },
       {
         "target_approval": 0.9,
-        "threshold": 0.5512084521852669
+        "threshold": 0.550727381469602
       }
     ],
-    "config_sha256": "063a65e3409a46f584af3948c5cdbc35b6b60293fdcdf4cfb4d8f0121695d3aa"
+    "config_sha256": "adc1ce40ef6a20181d5dbf6ca54c88467da66a7a88a2731a3302bfe0e75db372"
   },
   "intervals": {
     "auc": {
-      "lower": 0.7770502151637303,
-      "upper": 0.8063195934311774
+      "lower": 0.776307942487901,
+      "upper": 0.8057976724363917
     },
     "auc_gain_vs_woe": {
-      "lower": 0.008378872962389785,
-      "upper": 0.021641105124376864
+      "lower": 0.00834709914876249,
+      "upper": 0.020362506092071332
     },
     "cost_saving_vs_woe": {
-      "lower": 0.0059669391345983265,
-      "upper": 0.045266506581049706
+      "lower": 0.0021428809716357014,
+      "upper": 0.04051340049989728
     },
     "cost_per_customer": {
-      "lower": 0.5069649377978585,
-      "upper": 0.5627130717005351
+      "lower": 0.5133506280355848,
+      "upper": 0.5702754150412069
     }
+  },
+  "revision": "2026-10-06 fixed-capacity extension; published 2026-10-02 holdout reused",
+  "runtime_packages": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.8.0",
+    "scipy": "1.17.0",
+    "matplotlib": "3.10.8",
+    "xlrd": "2.0.1",
+    "joblib": "1.5.3",
+    "threadpoolctl": "3.6.0",
+    "xgboost": "3.0.2"
+  },
+  "quality_audit": {
+    "rows": 30000,
+    "defaults": 6636,
+    "default_rate": 0.2212,
+    "missing_cells": 0,
+    "duplicate_ids": 0,
+    "duplicate_financial_rows": 817,
+    "conflicting_label_groups": 85,
+    "negative_bill_cells": 3932,
+    "negative_payment_cells": 0,
+    "utilization_over_one": 2115,
+    "nonpositive_limits": 0,
+    "policy": "Flags are descriptive; negative bills and high utilization are retained. No test-based clipping."
+  },
+  "scorecard": {
+    "base_score": 600,
+    "base_odds_good_to_bad": 20,
+    "pdo": 20,
+    "factor": 28.85390081777927,
+    "offset": 513.5614381022527,
+    "intercept": -1.2489930962195481,
+    "base_points": 549.5997610226626,
+    "woe_convention": "log(bad_share/good_share); legacy EPS smoothing",
+    "missing_policy": "training median; dataset has no missing cells",
+    "interval_convention": "(left,right]; outer boundaries infinite",
+    "max_probability_reconstruction_error": 6.661338147750939e-16
+  },
+  "stability": {
+    "reference": "training population; all boundaries fixed before test",
+    "stress_definition": "LIMIT_BAL x0.7; nonnegative latest status +1 capped at 8; derived fields recomputed",
+    "same_cohort_approval_rate": 0.5663554518172724,
+    "stress_approval_rate": 0.24874958319439813,
+    "same_cohort_max_psi": 0.006542933236641955,
+    "stress_max_psi": 4.967521477399134,
+    "limitation": "Stress has no new labels; no predictive accuracy or causal default effects are inferred. PSI cutoffs are heuristics."
+  },
+  "sql_parity": [
+    {
+      "feature": "utilization_latest",
+      "rows_checked": 30000,
+      "max_absolute_error": 0.0
+    },
+    {
+      "feature": "utilization_mean",
+      "rows_checked": 30000,
+      "max_absolute_error": 0.0
+    },
+    {
+      "feature": "delayed_months",
+      "rows_checked": 30000,
+      "max_absolute_error": 0.0
+    },
+    {
+      "feature": "max_delay",
+      "rows_checked": 30000,
+      "max_absolute_error": 0.0
+    },
+    {
+      "feature": "payment_bill_ratio",
+      "rows_checked": 30000,
+      "max_absolute_error": 0.0
+    }
+  ],
+  "shap": {
+    "model": "uncalibrated xgboost challenger",
+    "method": "native exact TreeSHAP",
+    "rows": 512,
+    "space": "raw log odds",
+    "max_additivity_error": 1.9073486328125e-06
   }
 }

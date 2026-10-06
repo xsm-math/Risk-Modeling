@@ -1,0 +1,14 @@
+{
+  "rows": 30000,
+  "defaults": 6636,
+  "default_rate": 0.2212,
+  "missing_cells": 0,
+  "duplicate_ids": 0,
+  "duplicate_financial_rows": 817,
+  "conflicting_label_groups": 85,
+  "negative_bill_cells": 3932,
+  "negative_payment_cells": 0,
+  "utilization_over_one": 2115,
+  "nonpositive_limits": 0,
+  "policy": "Flags are descriptive; negative bills and high utilization are retained. No test-based clipping."
+}

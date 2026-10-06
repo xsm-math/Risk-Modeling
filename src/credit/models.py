@@ -7,7 +7,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassifier
 from src.risk.features import WOEEncoder
 
 
@@ -24,12 +24,24 @@ class WOETransform(TransformerMixin, BaseEstimator):
 
 def build_models(config):
     lr = lambda: LogisticRegression(C=config['lr_C'], max_iter=3000, solver='lbfgs')
-    return {
+    models = {
         'linear_lr': make_pipeline(SimpleImputer(strategy='median'), StandardScaler(), lr()),
         'woe_lr': make_pipeline(WOETransform(), StandardScaler(), lr()),
         'hist_gbdt': HistGradientBoostingClassifier(**config['tree'], early_stopping=False,
                                                    random_state=config['seed']),
     }
+    if config.get('imbalance_ablation', False):
+        models['linear_lr_balanced'] = make_pipeline(SimpleImputer(strategy='median'),
+            StandardScaler(), LogisticRegression(C=config['lr_C'], max_iter=3000,
+                                                 class_weight='balanced'))
+    if 'random_forest' in config:
+        models['random_forest'] = RandomForestClassifier(**config['random_forest'],
+                                                       random_state=config['seed'], n_jobs=2)
+    if 'xgboost' in config:
+        from xgboost import XGBClassifier
+        models['xgboost'] = XGBClassifier(**config['xgboost'], objective='binary:logistic',
+            eval_metric='logloss', tree_method='hist', random_state=config['seed'], n_jobs=2)
+    return models
 
 
 class ProbabilityModel:

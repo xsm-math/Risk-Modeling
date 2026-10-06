@@ -27,7 +27,7 @@ accepting or rejecting new applicants.
 
 [Yeh (2009), UCI Default of Credit Card Clients](https://doi.org/10.24432/C55S3H),
 CC BY 4.0: six months of payment status, bills and payments from April–September
-2005 and a next-month default label. Observed default rate: **22.12%**.
+2005 and a next-month default label. Observed default rate: **{{BAD_RATE}}**.
 The official archive is downloaded with a pinned SHA256 and strict schema checks.
 No synthetic fallback is used for this benchmark.
 
@@ -132,27 +132,20 @@ The primary scenario costs a false rejection 1 unit and a missed default 5 units
 Empirical cost is `FP + 5 × FN`; validation selects a threshold over whole tied-score
 blocks, including all-approve/all-reject. If probabilities and costs are accurate,
 the expected-cost rule is `PD >= 1/(1+5)`. The selected empirical threshold is
-**0.171438**. The report compares both rules, 0.5, all-approve and all-reject,
+**{{THRESHOLD}}**. The report compares both rules, 0.5, all-approve and all-reject,
 plus cost ratios 1, 2, 5, 10 and 20.5 and validation-defined approval targets.
 Actual EAD and LGD are unavailable; normalized loss is not a currency estimate.
 
 ## Results
 
-Validation selects **random_forest_sigmoid**; the following rows summarize frozen test results.
+Validation selects **{{SELECTED}}**; the following rows summarize frozen test results.
 All twelve candidate variants and the constant-prior baseline remain in the CSV.
 
-| model | auc | ks | average_precision | brier | log_loss |
-| --- | --- | --- | --- | --- | --- |
-| linear_lr | 0.7662 | 0.4366 | 0.5185 | 0.1383 | 0.4402 |
-| woe_lr | 0.7774 | 0.4308 | 0.5478 | 0.1343 | 0.4298 |
-| hist_gbdt | 0.7924 | 0.4519 | 0.5631 | 0.1322 | 0.4219 |
-| random_forest | 0.7917 | 0.4580 | 0.5700 | 0.1724 | 0.5251 |
-| random_forest_sigmoid | 0.7917 | 0.4580 | 0.5700 | 0.1322 | 0.4216 |
-| xgboost | 0.7936 | 0.4553 | 0.5728 | 0.1315 | 0.4201 |
+{{RESULT_TABLE}}
 
-The selected policy has precision **38.45%**, default recall **75.41%**,
-F1 **0.5093** and approval rate **56.64%**. Its normalized cost is
-**0.5387 per customer**, versus **0.5600** for the raw WOE baseline,
+The selected policy has precision **{{PRECISION}}**, default recall **{{RECALL}}**,
+F1 **{{F1}}** and approval rate **{{APPROVAL}}**. Its normalized cost is
+**{{COST}} per customer**, versus **{{WOE_COST}}** for the raw WOE baseline,
 each using its own validation-selected cutoff. This trade-off is a retrospective
 scenario, not realized savings or an estimated effect of rejecting customers.
 

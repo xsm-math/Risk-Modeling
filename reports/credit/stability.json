@@ -1,0 +1,9 @@
+{
+  "reference": "training population; all boundaries fixed before test",
+  "stress_definition": "LIMIT_BAL x0.7; nonnegative latest status +1 capped at 8; derived fields recomputed",
+  "same_cohort_approval_rate": 0.5663554518172724,
+  "stress_approval_rate": 0.24874958319439813,
+  "same_cohort_max_psi": 0.006542933236641955,
+  "stress_max_psi": 4.967521477399134,
+  "limitation": "Stress has no new labels; no predictive accuracy or causal default effects are inferred. PSI cutoffs are heuristics."
+}

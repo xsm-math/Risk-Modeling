@@ -27,6 +27,10 @@ def main():
         if list(X.columns)!=artifact['features']:raise ValueError('Feature schema differs from saved model.')
         with threadpool_limits(limits=2):p=artifact['model'].predict(X)
         result=pd.DataFrame({'row':range(len(raw)),'default_probability':p,'reject_flag':p>=artifact['threshold']})
+        if 'scorecard' in artifact:
+            from numpy import log
+            spec=artifact['scorecard']
+            result['credit_score']=spec['offset']-spec['factor']*log(p/(1-p))
         if 'ID' in raw:result.insert(0,'ID',raw.ID)
         result.to_csv(args.output,index=False)
         print(f'Scored {len(result)} rows using {artifact["model_name"]}; threshold={artifact["threshold"]:.6f}')

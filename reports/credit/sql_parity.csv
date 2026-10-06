@@ -1,0 +1,6 @@
+feature,rows_checked,max_absolute_error
+utilization_latest,30000,0.0
+utilization_mean,30000,0.0
+delayed_months,30000,0.0
+max_delay,30000,0.0
+payment_bill_ratio,30000,0.0

@@ -1,10 +1,32 @@
-# Credit default: scorecards, tree benchmarks and decisions
+"""Research manuscript and career summaries populated from executed artifacts."""
+import json
+from pathlib import Path
+import pandas as pd
+
+
+def table(df, digits=4):
+    df=df.copy()
+    for c in df.select_dtypes('number'):
+        df[c]=df[c].map(lambda v:f'{v:.{digits}f}' if pd.notna(v) else 'NA')
+    return '| '+' | '.join(df.columns)+' |\n| '+' | '.join(['---']*len(df.columns))+' |\n'+'\n'.join(
+        '| '+' | '.join(map(str,row))+' |' for row in df.to_numpy())
+
+
+def write_report(out, comparison, validation, policies, costs, approvals, splits, meta):
+    selected=meta['selection']['model'];q=meta['quality_audit'];ratio=meta['selection']['primary_cost_ratio']
+    ci=meta['intervals'];s=meta['scorecard'];d=meta['stability']
+    decisions=pd.read_csv(out/'decision_metrics.csv')
+    important=pd.read_csv(out/'feature_importance.csv').head(10)
+    iv=pd.read_csv(out/'iv_coefficients.csv').head(12)
+    psi=pd.read_csv(out/'feature_psi.csv')
+    calibration=comparison[['model','brier','log_loss','mean_predicted','default_rate']]
+    report=f'''# Credit default: scorecards, tree benchmarks and decisions
 
 ## Abstract
 
-This extension studies 30,000 UCI existing-cardholder records. Six fixed-capacity
+This extension studies {q['rows']:,} UCI existing-cardholder records. Six fixed-capacity
 base estimators and their holdout sigmoid variants compare ranking, probability
-quality and asymmetric decision costs. Validation log loss selects **random_forest_sigmoid**.
+quality and asymmetric decision costs. Validation log loss selects **{selected}**.
 All tables below come from the executed pipeline. This is an applied research
 exercise on a historical cohort, with normalized hypothetical costs.
 
@@ -12,13 +34,13 @@ exercise on a historical cohort, with normalized hypothetical costs.
 
 Yeh (2009), [UCI / DOI 10.24432/C55S3H](https://doi.org/10.24432/C55S3H), CC BY 4.0.
 Six observed months (April–September 2005) predict the next-month default label.
-Amounts are NT dollars. There are 6,636 defaults (22.12%),
-0 missing cells, 0 duplicate IDs,
-817 duplicate financial rows and 85
+Amounts are NT dollars. There are {q['defaults']:,} defaults ({q['default_rate']:.2%}),
+{q['missing_cells']} missing cells, {q['duplicate_ids']} duplicate IDs,
+{q['duplicate_financial_rows']} duplicate financial rows and {q['conflicting_label_groups']}
 duplicate-input groups with conflicting labels. All conflicting labels are preserved.
-There are 3932 negative bill entries and
-2115 latest bill/limit values above one. These are flags,
-not automatic grounds for deletion. Nonpositive limits: 0.
+There are {q['negative_bill_cells']} negative bill entries and
+{q['utilization_over_one']} latest bill/limit values above one. These are flags,
+not automatic grounds for deletion. Nonpositive limits: {q['nonpositive_limits']}.
 
 `data_quality.csv` includes missingness, finite-value checks, quantiles and IQR flags
 for every raw field. `category_frequencies.csv` flags undocumented codes. Negative
@@ -30,12 +52,7 @@ ID and four demographic fields are excluded from models; proxy bias remains poss
 
 ## Methodology and information boundaries
 
-| split | rows | defaults | default_rate | groups |
-| --- | --- | --- | --- | --- |
-| train | 17990.0000 | 3977.0000 | 0.2211 | 17507.0000 |
-| calibration | 3013.0000 | 670.0000 | 0.2224 | 2888.0000 |
-| validation | 2999.0000 | 663.0000 | 0.2211 | 2928.0000 |
-| test | 5998.0000 | 1326.0000 | 0.2211 | 5860.0000 |
+{table(splits)}
 
 Group identical financial histories before assigning ten stratified grouped folds:
 0–5 train, 6 calibration, 7 validation, 8–9 test. WOE, scaling and base estimators
@@ -68,25 +85,12 @@ score = offset - factor * logit(PD)
 
 Good:bad odds 20:1 correspond to 600 points; doubling good:bad odds adds 20 points.
 Score probability reconstruction maximum absolute error:
-**6.661e-16**. The raw WOE model, not its
+**{s['max_probability_reconstruction_error']:.3e}**. The raw WOE model, not its
 separate sigmoid variant, defines this scorecard. `scorecard_bins.csv` lists original
 numeric intervals and their final merged WOE values; repeated values after merging
 are intentional. Points are unrounded in the specification.
 
-| feature | iv | woe_coefficient | odds_multiplier_per_woe_unit | score_change_per_woe_unit | final_bins |
-| --- | --- | --- | --- | --- | --- |
-| PAY_0 | 0.8414 | 0.7160 | 2.0461 | -20.6580 | 4.0000 |
-| delayed_months | 0.8289 | -0.5607 | 0.5708 | 16.1779 | 5.0000 |
-| max_delay | 0.6626 | 0.4838 | 1.6222 | -13.9598 | 2.0000 |
-| PAY_2 | 0.5339 | 0.1501 | 1.1619 | -4.3296 | 4.0000 |
-| PAY_3 | 0.4135 | 0.2679 | 1.3072 | -7.7291 | 4.0000 |
-| PAY_4 | 0.3564 | 0.1545 | 1.1671 | -4.4586 | 4.0000 |
-| PAY_5 | 0.3368 | 0.2382 | 1.2690 | -6.8737 | 4.0000 |
-| PAY_6 | 0.2909 | 0.2833 | 1.3276 | -8.1757 | 4.0000 |
-| LIMIT_BAL | 0.1591 | 0.3969 | 1.4873 | -11.4532 | 5.0000 |
-| PAY_AMT1 | 0.1556 | 0.1926 | 1.2123 | -5.5560 | 5.0000 |
-| PAY_AMT2 | 0.1376 | 0.1994 | 1.2207 | -5.7546 | 5.0000 |
-| utilization_mean | 0.1164 | 0.4872 | 1.6277 | -14.0565 | 5.0000 |
+{table(iv)}
 
 ## ML benchmarks and imbalance
 
@@ -98,67 +102,26 @@ The sigmoid variants fit on a population-preserving calibration holdout; class
 weights can alter raw PD estimates. Threshold choice is the primary cost-sensitive
 strategy. Each learner receives the same rows, features and validation objective.
 
-| model | auc | average_precision | brier | log_loss |
-| --- | --- | --- | --- | --- |
-| linear_lr | 0.7829 | 0.5468 | 0.1353 | 0.4329 |
-| linear_lr_sigmoid | 0.7829 | 0.5468 | 0.1358 | 0.4343 |
-| woe_lr | 0.7908 | 0.5771 | 0.1311 | 0.4209 |
-| woe_lr_sigmoid | 0.7908 | 0.5771 | 0.1313 | 0.4215 |
-| hist_gbdt | 0.8013 | 0.5925 | 0.1293 | 0.4135 |
-| hist_gbdt_sigmoid | 0.8013 | 0.5925 | 0.1295 | 0.4139 |
-| linear_lr_balanced | 0.7826 | 0.5427 | 0.1881 | 0.5666 |
-| linear_lr_balanced_sigmoid | 0.7826 | 0.5427 | 0.1359 | 0.4338 |
-| random_forest | 0.8010 | 0.5909 | 0.1695 | 0.5184 |
-| random_forest_sigmoid | 0.8010 | 0.5909 | 0.1289 | 0.4131 |
-| xgboost | 0.8012 | 0.5926 | 0.1290 | 0.4134 |
-| xgboost_sigmoid | 0.8012 | 0.5926 | 0.1291 | 0.4135 |
+{table(validation[['model','auc','average_precision','brier','log_loss']])}
 
 ## Evaluation
 
-| model | auc | ks | average_precision | pr_auc_trapezoid | brier | log_loss |
-| --- | --- | --- | --- | --- | --- | --- |
-| linear_lr | 0.7662 | 0.4366 | 0.5185 | 0.5178 | 0.1383 | 0.4402 |
-| linear_lr_sigmoid | 0.7662 | 0.4366 | 0.5185 | 0.5178 | 0.1387 | 0.4410 |
-| woe_lr | 0.7774 | 0.4308 | 0.5478 | 0.5458 | 0.1343 | 0.4298 |
-| woe_lr_sigmoid | 0.7774 | 0.4308 | 0.5478 | 0.5458 | 0.1345 | 0.4302 |
-| hist_gbdt | 0.7924 | 0.4519 | 0.5631 | 0.5627 | 0.1322 | 0.4219 |
-| hist_gbdt_sigmoid | 0.7924 | 0.4519 | 0.5631 | 0.5627 | 0.1323 | 0.4222 |
-| linear_lr_balanced | 0.7665 | 0.4416 | 0.5163 | 0.5156 | 0.1908 | 0.5734 |
-| linear_lr_balanced_sigmoid | 0.7665 | 0.4416 | 0.5163 | 0.5156 | 0.1388 | 0.4410 |
-| random_forest | 0.7917 | 0.4580 | 0.5700 | 0.5697 | 0.1724 | 0.5251 |
-| random_forest_sigmoid | 0.7917 | 0.4580 | 0.5700 | 0.5697 | 0.1322 | 0.4216 |
-| xgboost | 0.7936 | 0.4553 | 0.5728 | 0.5725 | 0.1315 | 0.4201 |
-| xgboost_sigmoid | 0.7936 | 0.4553 | 0.5728 | 0.5725 | 0.1316 | 0.4203 |
-| constant_prior | 0.5000 | 0.0000 | 0.2211 | 0.6105 | 0.1722 | 0.5283 |
+{table(comparison[['model','auc','ks','average_precision','pr_auc_trapezoid','brier','log_loss']])}
 
 Average precision uses non-interpolated recall increments; trapezoidal PR-AUC is
 reported separately. Linear PR interpolation can inflate the constant/tied-score
 baseline's area; AP is the primary PR summary. Precision/recall/F1 and confusion counts belong to a stated
 threshold, not an intrinsic ranking metric. Selected model AUC 95% grouped-bootstrap
-interval: [0.7763, 0.8058]. Paired AUC difference
-versus WOE interval: [0.0083, 0.0204].
-The 500 paired cluster replicates retain duplicate-input groups and only measure
+interval: [{ci['auc']['lower']:.4f}, {ci['auc']['upper']:.4f}]. Paired AUC difference
+versus WOE interval: [{ci['auc_gain_vs_woe']['lower']:.4f}, {ci['auc_gain_vs_woe']['upper']:.4f}].
+The {meta['bootstrap_repeats']} paired cluster replicates retain duplicate-input groups and only measure
 test sampling uncertainty conditional on frozen training and selection.
 
 ![ROC and PR curves](roc_pr.png)
 
 ## Calibration and probability quality
 
-| model | brier | log_loss | mean_predicted | default_rate |
-| --- | --- | --- | --- | --- |
-| linear_lr | 0.1383 | 0.4402 | 0.2222 | 0.2211 |
-| linear_lr_sigmoid | 0.1387 | 0.4410 | 0.2222 | 0.2211 |
-| woe_lr | 0.1343 | 0.4298 | 0.2209 | 0.2211 |
-| woe_lr_sigmoid | 0.1345 | 0.4302 | 0.2208 | 0.2211 |
-| hist_gbdt | 0.1322 | 0.4219 | 0.2205 | 0.2211 |
-| hist_gbdt_sigmoid | 0.1323 | 0.4222 | 0.2173 | 0.2211 |
-| linear_lr_balanced | 0.1908 | 0.5734 | 0.4449 | 0.2211 |
-| linear_lr_balanced_sigmoid | 0.1388 | 0.4410 | 0.2223 | 0.2211 |
-| random_forest | 0.1724 | 0.5251 | 0.4136 | 0.2211 |
-| random_forest_sigmoid | 0.1322 | 0.4216 | 0.2180 | 0.2211 |
-| xgboost | 0.1315 | 0.4201 | 0.2210 | 0.2211 |
-| xgboost_sigmoid | 0.1316 | 0.4203 | 0.2181 | 0.2211 |
-| constant_prior | 0.1722 | 0.5283 | 0.2211 | 0.2211 |
+{table(calibration)}
 
 Mean PD, Brier and log loss accompany ten-bin reliability counts in `reliability.csv`.
 Brier and log loss combine discrimination and calibration; neither alone establishes
@@ -174,64 +137,32 @@ For false rejection cost 1 and missed-default cost r, observed normalized loss i
 FP + r*FN. Expected rejection cost is (1-PD); expected approval cost is r*PD, so
 the probability rule rejects when PD >= 1/(1+r). The empirical rule minimizes
 validation cost over entire equal-score blocks including approve/reject-all;
-ties prefer fewer rejections. Primary r=5 is fixed before evaluation.
+ties prefer fewer rejections. Primary r={ratio} is fixed before evaluation.
 This is not a currency estimate of PD*LGD*EAD: the dataset lacks actual losses
 and exposures. LIMIT_BAL must not be substituted for contractual EAD.
 
-| policy | threshold | cost_per_customer | approval_rate | approved_default_rate | bad_capture |
-| --- | --- | --- | --- | --- | --- |
-| validation_min_cost | 0.1714 | 0.5387 | 0.5664 | 0.0960 | 0.7541 |
-| probability_cost_rule | 0.1667 | 0.5420 | 0.5530 | 0.0953 | 0.7617 |
-| threshold_0.5 | 0.5000 | 0.7447 | 0.8845 | 0.1602 | 0.3590 |
-| approve_all | 1.0000 | 1.1054 | 1.0000 | 0.2211 | 0.0000 |
-| reject_all | 0.0000 | 0.7789 | 0.0000 | NA | 1.0000 |
+{table(costs[costs.ratio==ratio][['policy','threshold','cost_per_customer','approval_rate','approved_default_rate','bad_capture']])}
 
 All model-specific validation thresholds, including calibrated and weighted
 ablations, are evaluated transparently:
 
-| model | threshold | precision | recall | f1 | cost_per_customer | approval_rate |
-| --- | --- | --- | --- | --- | --- | --- |
-| linear_lr | 0.1419 | 0.3415 | 0.7888 | 0.4766 | 0.5697 | 0.4893 |
-| linear_lr_sigmoid | 0.1480 | 0.3415 | 0.7888 | 0.4766 | 0.5697 | 0.4893 |
-| woe_lr | 0.1680 | 0.3980 | 0.7074 | 0.5094 | 0.5600 | 0.6070 |
-| woe_lr_sigmoid | 0.1700 | 0.3980 | 0.7074 | 0.5094 | 0.5600 | 0.6070 |
-| hist_gbdt | 0.1664 | 0.3751 | 0.7745 | 0.5054 | 0.5345 | 0.5435 |
-| hist_gbdt_sigmoid | 0.1647 | 0.3751 | 0.7745 | 0.5054 | 0.5345 | 0.5435 |
-| linear_lr_balanced | 0.3634 | 0.3376 | 0.7866 | 0.4725 | 0.5770 | 0.4850 |
-| linear_lr_balanced_sigmoid | 0.1457 | 0.3376 | 0.7866 | 0.4725 | 0.5770 | 0.4850 |
-| random_forest | 0.4017 | 0.3845 | 0.7541 | 0.5093 | 0.5387 | 0.5664 |
-| random_forest_sigmoid | 0.1714 | 0.3845 | 0.7541 | 0.5093 | 0.5387 | 0.5664 |
-| xgboost | 0.1629 | 0.3747 | 0.7768 | 0.5055 | 0.5333 | 0.5417 |
-| xgboost_sigmoid | 0.1605 | 0.3747 | 0.7768 | 0.5055 | 0.5333 | 0.5417 |
+{table(policies[['model','threshold','precision','recall','f1','cost_per_customer','approval_rate']])}
 
 The paired cost saving versus WOE interval is
-[0.0021, 0.0405]
+[{ci['cost_saving_vs_woe']['lower']:.4f}, {ci['cost_saving_vs_woe']['upper']:.4f}]
 normalized units per record. Full ratio scenarios and 0.5 comparisons are in
 `cost_sensitivity.csv` and `decision_metrics.csv`. Test labels never choose these rules.
 
 ## Stability and population shift
 
-| scenario | feature | psi | heuristic_level |
-| --- | --- | --- | --- |
-| simulated_limit_status_shift | PAY_0 | 4.9675 | review |
-| simulated_limit_status_shift | max_delay | 1.2090 | review |
-| simulated_limit_status_shift | delayed_months | 0.8923 | review |
-| simulated_limit_status_shift | model_probability | 0.5890 | review |
-| simulated_limit_status_shift | utilization_latest | 0.4330 | review |
-| simulated_limit_status_shift | LIMIT_BAL | 0.3406 | review |
-| simulated_limit_status_shift | utilization_mean | 0.3025 | review |
-| same_cohort_test | LIMIT_BAL | 0.0065 | low |
-| simulated_limit_status_shift | BILL_AMT2 | 0.0036 | low |
-| same_cohort_test | BILL_AMT2 | 0.0036 | low |
-| same_cohort_test | utilization_latest | 0.0032 | low |
-| same_cohort_test | model_probability | 0.0030 | low |
+{table(psi.sort_values('psi',ascending=False).head(12))}
 
 Training-fixed quantile bins (raw status codes use category bins) include explicit
 missing/unknown states and half-count smoothing. Same-cohort maximum PSI is
-0.0065. A simulated limit x0.7 and latest nonnegative status
+{d['same_cohort_max_psi']:.4f}. A simulated limit x0.7 and latest nonnegative status
 +1 scenario, with derived features recomputed, gives maximum PSI
-4.9675; approval changes from 56.64%
-to 24.87%. This is a pipeline stress experiment with no new
+{d['stress_max_psi']:.4f}; approval changes from {d['same_cohort_approval_rate']:.2%}
+to {d['stress_approval_rate']:.2%}. This is a pipeline stress experiment with no new
 labels, not observed temporal drift or default-performance evidence.
 0.1/0.25 PSI triggers are review heuristics, not significance tests or universal standards.
 
@@ -239,18 +170,7 @@ labels, not observed temporal drift or default-performance evidence.
 
 ## Explanation and scorecard/tree trade-off
 
-| feature | validation_auc_drop | repeat_sd |
-| --- | --- | --- |
-| PAY_0 | 0.0209 | 0.0007 |
-| max_delay | 0.0102 | 0.0007 |
-| LIMIT_BAL | 0.0058 | 0.0004 |
-| delayed_months | 0.0056 | 0.0004 |
-| utilization_mean | 0.0041 | 0.0016 |
-| utilization_latest | 0.0037 | 0.0009 |
-| PAY_AMT1 | 0.0020 | 0.0004 |
-| payment_bill_ratio | 0.0019 | 0.0006 |
-| PAY_AMT6 | 0.0017 | 0.0005 |
-| PAY_2 | 0.0014 | 0.0014 |
+{table(important)}
 
 Train WOE coefficients and bin points give additive model-specific explanations.
 Validation permutation importance reports AUC decrease and repeat variability;
@@ -271,11 +191,11 @@ monitoring and local review. Interpretability does not establish legal complianc
 
 `sql/behavior_features.sql` uses CTEs, CASE, ROW_NUMBER and six-period aggregations
 on actual UCI account histories. Five shared Python/SQL features are checked on
-all 30,000 records (`sql_parity.csv`); three-period delinquency and payments
+all {q['rows']:,} records (`sql_parity.csv`); three-period delinquency and payments
 are additional SQL demonstrations, not silently added model inputs. Account age
 cannot be constructed because account opening dates are unavailable.
 
-Source SHA256: `56c885f84457f6680f8438f02bfcdac9579323d8a94465ee5f26e32baa727602`. Config, split hash and versions are in
+Source SHA256: `{meta['source_sha256']}`. Config, split hash and versions are in
 `manifest.json`; source modification fails closed. Models and customer predictions
 remain local. The exported model is reloaded and prediction equality checked.
 Run `python scripts/run_all.py` after installing the reproduction requirements.
@@ -290,3 +210,29 @@ Future work should obtain recent dated cohorts, mature labels and point-in-time
 features; compare rolling OOT windows, missingness stress, monotonic scorecards,
 fairness diagnostics and losses by segment before considering prospective decisions.
 The original synthetic experiment and its historical test-exposure caveat remain separate.
+'''
+    (out/'REPORT.md').write_text(report,encoding='utf-8')
+
+
+def write_readme_and_career(root):
+    root=Path(root);out=root/'reports/credit'
+    meta=json.loads((out/'manifest.json').read_text(encoding='utf-8'))
+    selected=meta['selection']['model'];metrics=pd.read_csv(out/'test_metrics.csv')
+    policies=pd.read_csv(out/'model_policies.csv');m=metrics.set_index('model').loc[selected]
+    p=policies.set_index('model').loc[selected];base=policies.set_index('model').loc['woe_lr']
+    names=list(dict.fromkeys(['linear_lr','woe_lr','random_forest','xgboost','hist_gbdt',selected]))
+    display=metrics[metrics.model.isin(names)][['model','auc','ks','average_precision','brier','log_loss']]
+    changes={'{{RESULT_TABLE}}':table(display),'{{SELECTED}}':selected,
+        '{{AUC}}':f'{m.auc:.4f}','{{KS}}':f'{m.ks:.4f}','{{AP}}':f'{m.average_precision:.4f}',
+        '{{BRIER}}':f'{m.brier:.4f}','{{THRESHOLD}}':f'{p.threshold:.6f}',
+        '{{COST}}':f'{p.cost_per_customer:.4f}','{{WOE_COST}}':f'{base.cost_per_customer:.4f}',
+        '{{APPROVAL}}':f'{p.approval_rate:.2%}','{{RECALL}}':f'{p.recall:.2%}',
+        '{{PRECISION}}':f'{p.precision:.2%}','{{F1}}':f'{p.f1:.4f}',
+        '{{BAD_RATE}}':f'{meta["quality_audit"]["default_rate"]:.2%}'}
+    for source,target in [('docs/README.template.md','README.md'),
+                          ('docs/career/interview.template.md','docs/career/interview.md'),
+                          ('docs/career/resume.template.md','docs/career/resume.md')]:
+        text=(root/source).read_text(encoding='utf-8')
+        for key,value in changes.items():text=text.replace(key,value)
+        if '{{' in text:raise ValueError(f'Unfilled documentation placeholder: {source}')
+        (root/target).write_text(text,encoding='utf-8')

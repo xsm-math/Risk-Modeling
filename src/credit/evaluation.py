@@ -1,13 +1,15 @@
 """Discrimination, probability quality and transparent hypothetical decisions."""
 import numpy as np
 import pandas as pd
-from sklearn.metrics import roc_auc_score, average_precision_score, log_loss, brier_score_loss, roc_curve
+from sklearn.metrics import roc_auc_score, average_precision_score, log_loss, brier_score_loss, roc_curve, precision_recall_curve, auc
 
 
 def metrics(y, p):
     fpr, tpr, _ = roc_curve(y, p)
+    precision, recall, _ = precision_recall_curve(y, p)
     return {'auc': float(roc_auc_score(y, p)), 'ks': float(np.max(tpr-fpr)),
             'average_precision': float(average_precision_score(y, p)),
+            'pr_auc_trapezoid': float(auc(recall, precision)),
             'brier': float(brier_score_loss(y, p)), 'log_loss': float(log_loss(y, p)),
             'mean_predicted': float(np.mean(p)), 'default_rate': float(np.mean(y))}
 
@@ -21,7 +23,13 @@ def per_row_cost(y, p, threshold, ratio):
 def policy(y, p, threshold, ratio):
     y, p = np.asarray(y), np.asarray(p)
     approved = p < threshold
+    tp = int((~approved & (y == 1)).sum()); fp = int((~approved & (y == 0)).sum())
+    fn = int((approved & (y == 1)).sum()); tn = int((approved & (y == 0)).sum())
     return {'threshold': float(threshold), 'cost_per_customer': float(per_row_cost(y,p,threshold,ratio).mean()),
+            'tp': tp, 'fp': fp, 'fn': fn, 'tn': tn,
+            'precision': tp/(tp+fp) if tp+fp else 0.,
+            'recall': tp/(tp+fn) if tp+fn else 0.,
+            'f1': 2*tp/(2*tp+fp+fn) if 2*tp+fp+fn else 0.,
             'approval_rate': float(approved.mean()),
             'approved_default_rate': float(y[approved].mean()) if approved.any() else None,
             'bad_capture': float((~approved & (y == 1)).sum() / (y == 1).sum()) if (y == 1).any() else None}
