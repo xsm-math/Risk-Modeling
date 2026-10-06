@@ -19,5 +19,3 @@ jobs:
           path: |
             reports/credit/
             README.md
-            docs/career/interview.md
-            docs/career/resume.md

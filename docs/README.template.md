@@ -2,7 +2,7 @@
 
 [![tests](https://github.com/xsm-math/Risk-Modeling/actions/workflows/tests.yml/badge.svg)](https://github.com/xsm-math/Risk-Modeling/actions/workflows/tests.yml)
 
-[Research report](reports/credit/REPORT.md) · [Protocol](docs/credit_protocol.md) · [Data dictionary](docs/credit_data_dictionary.md) · [Interview guide (中文)](docs/career/interview.md) · [Resume descriptions](docs/career/resume.md)
+[Research report](reports/credit/REPORT.md) · [Protocol](docs/credit_protocol.md) · [Data dictionary](docs/credit_data_dictionary.md)
 
 ## Abstract
 
@@ -208,7 +208,7 @@ python -m pytest -q
 ```
 
 The one-command workflow verifies/downloads data, trains, evaluates, checks SQL and
-scorecard parity, and regenerates the report, README and metric-linked career materials.
+scorecard parity, and regenerates the research report and README.
 To retain committed tables while reproducing elsewhere:
 
 ```bash
@@ -236,7 +236,7 @@ split IDs, individual predictions and fitted models stay local and are ignored b
 | `scripts/`, `sql/` | One-command workflow and executable behavior aggregation |
 | `tests/` | Numerical, split, calibration, scorecard, PSI, SQL and serialization checks |
 | `reports/credit/` | Published aggregate figures, tables and provenance |
-| `docs/`, `docs/career/` | Protocol, monitoring, scorecard reasoning, interview guide and resume text |
+| `docs/` | Experiment protocol, monitoring and scorecard methodology |
 
 Original study: [synthetic baseline](SYNTHETIC_BASELINE.md) and
 [historical limitations](docs/methodology.md), run via `python -m src.train`.

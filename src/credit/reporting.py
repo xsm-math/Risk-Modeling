@@ -1,4 +1,4 @@
-"""Research manuscript and career summaries populated from executed artifacts."""
+"""Research manuscript and README populated from executed artifacts."""
 import json
 from pathlib import Path
 import pandas as pd
@@ -214,7 +214,7 @@ The original synthetic experiment and its historical test-exposure caveat remain
     (out/'REPORT.md').write_text(report,encoding='utf-8')
 
 
-def write_readme_and_career(root):
+def write_readme(root):
     root=Path(root);out=root/'reports/credit'
     meta=json.loads((out/'manifest.json').read_text(encoding='utf-8'))
     selected=meta['selection']['model'];metrics=pd.read_csv(out/'test_metrics.csv')
@@ -229,10 +229,8 @@ def write_readme_and_career(root):
         '{{APPROVAL}}':f'{p.approval_rate:.2%}','{{RECALL}}':f'{p.recall:.2%}',
         '{{PRECISION}}':f'{p.precision:.2%}','{{F1}}':f'{p.f1:.4f}',
         '{{BAD_RATE}}':f'{meta["quality_audit"]["default_rate"]:.2%}'}
-    for source,target in [('docs/README.template.md','README.md'),
-                          ('docs/career/interview.template.md','docs/career/interview.md'),
-                          ('docs/career/resume.template.md','docs/career/resume.md')]:
-        text=(root/source).read_text(encoding='utf-8')
-        for key,value in changes.items():text=text.replace(key,value)
-        if '{{' in text:raise ValueError(f'Unfilled documentation placeholder: {source}')
-        (root/target).write_text(text,encoding='utf-8')
+    source=root/'docs/README.template.md'
+    text=source.read_text(encoding='utf-8')
+    for key,value in changes.items():text=text.replace(key,value)
+    if '{{' in text:raise ValueError(f'Unfilled documentation placeholder: {source}')
+    (root/'README.md').write_text(text,encoding='utf-8',newline='\n')

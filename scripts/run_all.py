@@ -8,5 +8,5 @@ from src.credit.experiment import ROOT, run
 if __name__=='__main__':
     load_data(ROOT/'data/raw/uci_credit.zip',download=True)
     run()
-    from src.credit.reporting import write_readme_and_career
-    write_readme_and_career(ROOT)
+    from src.credit.reporting import write_readme
+    write_readme(ROOT)

@@ -27,8 +27,7 @@
 - EDA, ROC/PR, explanation, PSI and benchmark figures rendered and inspected.
 - Both label-free batch scoring paths checked on 100 actual test rows; scorecard
   artifact produces probability, points and decisions matching saved-model output.
-- Generated README/report/career links and placeholders checked; 36 interview
-  questions plus 1/3/5-minute introductions and bilingual resume descriptions included.
+- Generated README/report links and placeholders checked.
 
 ## What the offline tests establish
 

@@ -112,7 +112,7 @@ Raw files, row-level split manifests/predictions and joblib artifacts stay local
 The published manifest records dataset, config and split hashes plus runtime versions.
 The current run exports and reloads the model to verify prediction equivalence.
 The manifest also records quality, scorecard/SQL parity and native SHAP checks.
-`python scripts/run_all.py` regenerates results, README and career numbers together.
+`python scripts/run_all.py` regenerates research results and README together.
 See `docs/monitoring.md` for implemented diagnostics and proposed production monitoring.
 If a source checksum changes, stop and review provenance rather than silently accept it.
 Subsequent experiments must be labelled as revisions; repeated tuning against the
