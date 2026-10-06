@@ -1,0 +1,10 @@
+{
+  "project": "credit",
+  "chart": "summary.svg",
+  "scope": "Presentation from existing aggregate outputs; no refitting or new experiment.",
+  "inputs": {
+    "reports/credit/selection.json": "e9176afb89612251633019b8c346d94e2aabcc9f34a476f5569529d1ffd5c338",
+    "reports/credit/test_metrics.csv": "a3140a2d6b1e7957e6c2832fa50e985d2605aafe02eee5abb523be8e403e7b7a"
+  },
+  "matplotlib": "3.11.2"
+}
