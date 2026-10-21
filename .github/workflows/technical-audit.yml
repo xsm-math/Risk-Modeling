@@ -1,0 +1,27 @@
+name: Full credit technical audit
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-credit-repro.txt
+      - run: python -m pytest -q
+      - run: python scripts/audit.py --negative-control
+      - uses: actions/upload-artifact@v4
+        with:
+          name: credit-technical-audit-aggregates
+          path: |
+            reports/generated/audit/audit.json
+            reports/generated/audit/negative_control.csv
+            reports/generated/audit/reproduction/REPORT.md
+            reports/generated/audit/reproduction/manifest.json
+            reports/generated/audit/reproduction/test_metrics.csv
+            reports/generated/audit/reproduction/split_summary.csv

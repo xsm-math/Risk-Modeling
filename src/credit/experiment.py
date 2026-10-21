@@ -30,15 +30,26 @@ def write_json(path, value):
     Path(path).write_text(json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False)+'\n',encoding='utf-8')
 
 
+def write_predictions(path, ids, labels, predictions):
+    # Native tree probabilities may be float32. Pandas' dtype-dependent default
+    # text precision can change the numbers when a reader promotes to float64.
+    pd.DataFrame({'ID':ids,'y':labels,**predictions}).to_csv(path,index=False,float_format='%.17g')
+
+
 def run(config_path=None, output=None):
     config_path = Path(config_path or ROOT/'configs/credit.json')
     out = Path(output or ROOT/'reports/credit'); out.mkdir(parents=True,exist_ok=True)
-    config = json.loads(config_path.read_text()); ratio=config['primary_cost_ratio']
+    config = json.loads(config_path.read_text(encoding='utf-8')); ratio=config['primary_cost_ratio']
     df=load_data(ROOT/'data/raw/uci_credit.zip')
     X=features(df); y=df[TARGET].to_numpy()
     splits, manifest=split_data(df, config['seed'])
     # Row-level data and persisted models remain local, not published to Git.
-    local=ROOT/'data/processed/credit'; local.mkdir(parents=True,exist_ok=True)
+    # An explicit output isolates ALL generated state, including rows and models.
+    # The default retains the documented legacy artifact locations.
+    local=out/'local/processed' if output is not None else ROOT/'data/processed/credit'
+    artifact=out/'local/artifacts' if output is not None else ROOT/'artifacts'
+    local.mkdir(parents=True,exist_ok=True)
+    artifact.mkdir(parents=True,exist_ok=True)
     manifest.to_csv(local/'split_manifest.csv',index=False,lineterminator='\n')
     t,c,v,h=[splits[n] for n in ['train','calibration','validation','test']]
     import matplotlib
@@ -64,6 +75,7 @@ def run(config_path=None, output=None):
         selection={'model':selected,'criterion':'minimum validation log_loss; model name breaks ties',
                    'primary_cost_ratio':ratio,'threshold':thresholds[selected], 'policy_specs':policy_specs,
                    'approval_specs':approval_specs, 'config_sha256':hashlib.sha256(config_path.read_bytes()).hexdigest()}
+        selection['approval_rule']='largest whole-score-block validation approval count <= floor(target*N); not an exact quota'
         write_json(out/'selection.json',selection)
         ph={name:m.predict(X.iloc[h]) for name,m in candidates.items()}
         # Fixed prior-probability baseline: fitted on train only.
@@ -116,7 +128,6 @@ def run(config_path=None, output=None):
         rp=ref/ref.sum();cp=cur/cur.sum()
         psi=float(np.sum((cp-rp)*np.log(cp/rp)))
         # Complete pipeline artifact, plus schema/version metadata. Load only trusted joblib files.
-        artifact=ROOT/'artifacts'; artifact.mkdir(exist_ok=True)
         joblib.dump({'model':candidates[selected],'threshold':thresholds[selected],
                      'features':list(X.columns),'model_name':selected,'config':config,
                      'sklearn_version':sklearn.__version__},artifact/'credit_model.joblib')
@@ -127,7 +138,8 @@ def run(config_path=None, output=None):
         restored_probability=restored['model'].predict(X.iloc[h[:32]])
         roundtrip_error=float(np.max(np.abs(restored_probability-ph[selected][:32])))
         np.testing.assert_allclose(restored_probability,ph[selected][:32],rtol=0,atol=1e-12)
-        pd.DataFrame({'ID':df.iloc[h].ID.to_numpy(),'y':y[h],**ph}).to_csv(local/'test_predictions.csv',index=False)
+        write_predictions(local/'test_predictions.csv',df.iloc[h].ID.to_numpy(),y[h],ph)
+        write_predictions(local/'validation_predictions.csv',df.iloc[v].ID.to_numpy(),y[v],pv)
     split_summary=pd.DataFrame([{'split':n,'rows':len(idx),'defaults':int(y[idx].sum()),'default_rate':float(y[idx].mean()),
                                 'groups':int(manifest.iloc[idx]['group'].nunique())} for n,idx in splits.items()])
     for name,frame in [('validation_metrics',validation),('test_metrics',comparison),('model_policies',model_policies),
@@ -148,6 +160,12 @@ def run(config_path=None, output=None):
             ['numpy','pandas','scikit-learn','scipy','matplotlib','xlrd','joblib','threadpoolctl','xgboost']},
         'quality_audit':quality,'scorecard':scorecard,'stability':stability,'sql_parity':sql_parity})
     metadata['shap']=shap_summary
+    code_files=list((ROOT/'src/credit').glob('*.py'))+[ROOT/'src/risk/features.py']
+    metadata['code_sha256']={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes().replace(b'\r\n',b'\n')).hexdigest()
+                               for p in sorted(code_files)}
+    metadata['local_outputs']={'row_data':'local/processed' if output is not None else 'data/processed/credit',
+                               'models':'local/artifacts' if output is not None else 'artifacts',
+                               'publication':'Do not publish row-level data or joblib artifacts.'}
     write_json(out/'manifest.json',metadata)
     plot_results(out,comparison,cal,costs,approvals,selected,ratio)
     from .reporting import write_report

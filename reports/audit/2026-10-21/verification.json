@@ -1,0 +1,13 @@
+{
+  "audit_date": "2026-10-21",
+  "baseline_commit": "d5bf4d0",
+  "tests_before": 37,
+  "tests_after": 68,
+  "python": "3.12.14",
+  "reference_comparison": {
+    "auc": 0.0,
+    "ks": 0.0,
+    "brier": 6.691252996127162e-09,
+    "log_loss": 3.6031733152697143e-12
+  }
+}

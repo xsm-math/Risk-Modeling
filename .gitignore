@@ -13,3 +13,4 @@ artifacts/
 reports/generated/
 predictions.csv
 customers.csv
+reports/**/local/

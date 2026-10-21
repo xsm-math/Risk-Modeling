@@ -21,6 +21,8 @@
 
 ## Abstract
 
+**Technical audit (2026-10-21):** [Findings, fixes and 68-test verification](docs/TECHNICAL_AUDIT.md) · [Shuffled-label control](reports/audit/2026-10-21/negative_control.csv). Isolated runs include their row records and models under the chosen output.
+
 This applied research project estimates next-month default risk for existing
 credit-card customers using 30,000 public historical records. It compares an
 additive WOE logistic scorecard with raw logistic regression, Random Forest,
@@ -252,24 +254,23 @@ python -m venv .venv
 # PowerShell: .venv\Scripts\Activate.ps1
 # Linux/macOS: source .venv/bin/activate
 python -m pip install -r requirements-credit-repro.txt
-python scripts/run_all.py
 python -m pytest -q
+python scripts/audit.py --negative-control
 ```
 
-The one-command workflow verifies/downloads data, trains, evaluates, checks SQL and
-scorecard parity, and regenerates the research report and README.
-To retain committed tables while reproducing elsewhere:
+The audit downloads/verifies data, trains, evaluates, reconstructs saved metrics and runs a four-partition shuffled-label control. Outputs live under `reports/generated/audit/`; committed reference tables and README are preserved. The explicit maintenance command `python scripts/run_all.py` still refreshes the reference report and README.
+For a custom isolated experiment:
 
 ```bash
 python -m src.credit download
 python -m src.credit run --output reports/generated
 ```
 
-Batch inference after training:
+All explicit experiment outputs also contain `local/processed` rows and `local/artifacts` models. Batch inference after the audit (replace the model path for a custom run):
 
 ```bash
-python -m src.credit score --input customers.csv --output predictions.csv
-python -m src.credit score --input customers.csv --output scorecard_predictions.csv --model artifacts/credit_scorecard.joblib
+python -m src.credit score --input customers.csv --output predictions.csv --model reports/generated/audit/reproduction/local/artifacts/credit_model.joblib
+python -m src.credit score --input customers.csv --output scorecard_predictions.csv --model reports/generated/audit/reproduction/local/artifacts/credit_scorecard.joblib
 ```
 
 The input needs the 19 raw account fields; labels are unnecessary. The scorecard

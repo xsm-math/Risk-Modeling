@@ -1,0 +1,56 @@
+{
+  "checks": "passed",
+  "rows": 30000,
+  "selected": "random_forest_sigmoid",
+  "threshold": 0.17143843744366105,
+  "maximum_metric_reconstruction_error": 8.326672684688674e-17,
+  "approval_capacity": [
+    {
+      "target": 0.5,
+      "validation_approval": 0.49983327775925307,
+      "test_approval": 0.49733244414804934
+    },
+    {
+      "target": 0.6,
+      "validation_approval": 0.5998666222074025,
+      "test_approval": 0.6025341780593532
+    },
+    {
+      "target": 0.7,
+      "validation_approval": 0.6998999666555519,
+      "test_approval": 0.6960653551183728
+    },
+    {
+      "target": 0.8,
+      "validation_approval": 0.7999333111037013,
+      "test_approval": 0.8067689229743248
+    },
+    {
+      "target": 0.9,
+      "validation_approval": 0.8999666555518506,
+      "test_approval": 0.9029676558852952
+    }
+  ],
+  "code_sha256": {
+    "src/credit/__init__.py": "ac1a79c04d9331575a55ec0171e64b3285f295847f4693f2fee4a1298c956af6",
+    "src/credit/__main__.py": "13d9a3000dd54643d189502662045ab90664f382a310ccfa87ac8e726917e1e5",
+    "src/credit/data.py": "9287d56b1bfcae46664341714146824504d51203e32f6bc5c91ded51020df4db",
+    "src/credit/diagnostics.py": "15e2c172588139afdb9c3446a6689d7296e4de2f6d2479e028ce6103047d54c7",
+    "src/credit/evaluation.py": "b09199cdc98049a22b372c860406dbc7c7e6a4d0c900d556bd42df55302e065b",
+    "src/credit/experiment.py": "8bb2940a9aba6e1843654d314509c5c642fb9087b5d3e236c80339f2906b900c",
+    "src/credit/models.py": "1e4d795e153910eb8c67e18a0ffeb822f38bbb2fc256e4ee117d3c7a6732329d",
+    "src/credit/reporting.py": "abd71c755012f16899a73c940732e57f08d58ce9960ac8e6a49d2ebb10e1411c",
+    "src/credit/sql_features.py": "d8b2cfed0f1b3d0a1e167b67b275a5f25ac4b860a0be16367288b80a60d0815a",
+    "src/risk/features.py": "e4989ceadcd897d75f96c2c7b63627d6a086c1b4abb5bcd2e5007fedb505a6b8"
+  },
+  "data_sha256": "56c885f84457f6680f8438f02bfcdac9579323d8a94465ee5f26e32baa727602",
+  "negative_control": {
+    "seed": 20262001,
+    "selected_on_shuffled_validation_labels": "random_forest_sigmoid",
+    "test_auc": 0.5089852870152276,
+    "design": "Labels independently permuted inside all four fixed partitions; split/features/model capacity unchanged. Selection uses permuted validation labels before evaluating permuted test labels. Original-label AUC is retained as a separate diagnostic, not a control pass criterion.",
+    "scope": "One diagnostic, not proof of no leakage, not an external test."
+  },
+  "audit_script_sha256": "633742e9a886711050337f4d343b642f2a6ef151e03f397f174151c9f6a502e6",
+  "limitations": "Previously published cohort/split; no new temporal or external holdout. Bootstrap is conditional on fixed fitted models and rules."
+}
