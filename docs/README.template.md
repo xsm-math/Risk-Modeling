@@ -19,6 +19,8 @@
 
 [Research report](reports/credit/REPORT.md) · [Protocol](docs/credit_protocol.md) · [Data dictionary](docs/credit_data_dictionary.md)
 
+[中文研究说明与证据索引](docs/research_evidence.md)：问题、特征口径、选择依据、结果边界与发布表对账。
+
 ## Abstract
 
 **Technical audit (2026-10-21):** [Findings, fixes and 68-test verification](docs/TECHNICAL_AUDIT.md) · [Shuffled-label control](reports/audit/2026-10-21/negative_control.csv). Isolated runs include their row records and models under the chosen output.
