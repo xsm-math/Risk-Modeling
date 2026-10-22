@@ -15,12 +15,14 @@ jobs:
       - run: python -m pip install -r requirements-credit-repro.txt
       - run: python -m pytest -q
       - run: python scripts/audit.py --negative-control
+      - run: python scripts/compare_reference.py --run-dir reports/generated/audit/reproduction --output reports/generated/audit/reference_comparison.json
       - uses: actions/upload-artifact@v4
         with:
           name: credit-technical-audit-aggregates
           path: |
             reports/generated/audit/audit.json
             reports/generated/audit/negative_control.csv
+            reports/generated/audit/reference_comparison.json
             reports/generated/audit/reproduction/REPORT.md
             reports/generated/audit/reproduction/manifest.json
             reports/generated/audit/reproduction/test_metrics.csv

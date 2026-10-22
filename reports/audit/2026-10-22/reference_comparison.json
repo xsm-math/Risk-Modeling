@@ -1,0 +1,108 @@
+{
+  "checks": "passed",
+  "absolute_tolerance": 1e-07,
+  "selected": "random_forest_sigmoid",
+  "source_sha256": "56c885f84457f6680f8438f02bfcdac9579323d8a94465ee5f26e32baa727602",
+  "split_manifest_sha256": "32b014334aef52af9e3e20d9953e73db0d74617c9dae49182a67a92b032254ac",
+  "runtime_packages": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.8.0",
+    "scipy": "1.17.0",
+    "matplotlib": "3.10.8",
+    "xlrd": "2.0.1",
+    "joblib": "1.5.3",
+    "threadpoolctl": "3.6.0",
+    "xgboost": "3.0.2"
+  },
+  "tables": [
+    {
+      "file": "test_metrics.csv",
+      "rows": 13,
+      "max_absolute_error": 6.691253023882737e-09,
+      "nonzero_differences": [
+        {
+          "row": "xgboost",
+          "column": "brier",
+          "reference": 0.1315450519323349,
+          "reproduced": 0.13154505862358792,
+          "absolute_error": 6.691253023882737e-09
+        },
+        {
+          "row": "xgboost",
+          "column": "log_loss",
+          "reference": 0.4201216075481011,
+          "reproduced": 0.4201216075444979,
+          "absolute_error": 3.6031733152697143e-12
+        },
+        {
+          "row": "xgboost",
+          "column": "mean_predicted",
+          "reference": 0.2209586799144745,
+          "reproduced": 0.22095867365948973,
+          "absolute_error": 6.254984752374071e-09
+        }
+      ],
+      "reference_sha256": "a3140a2d6b1e7957e6c2832fa50e985d2605aafe02eee5abb523be8e403e7b7a"
+    },
+    {
+      "file": "validation_metrics.csv",
+      "rows": 12,
+      "max_absolute_error": 1.4648999152599984e-08,
+      "nonzero_differences": [
+        {
+          "row": "random_forest_sigmoid",
+          "column": "brier",
+          "reference": 0.12893931222235674,
+          "reproduced": 0.12893931222235672,
+          "absolute_error": 2.7755575615628914e-17
+        },
+        {
+          "row": "xgboost",
+          "column": "brier",
+          "reference": 0.1290161907672882,
+          "reproduced": 0.12901618993183098,
+          "absolute_error": 8.354572311741748e-10
+        },
+        {
+          "row": "xgboost",
+          "column": "log_loss",
+          "reference": 0.4133597318825686,
+          "reproduced": 0.4133597316419224,
+          "absolute_error": 2.406461696580209e-10
+        },
+        {
+          "row": "xgboost",
+          "column": "mean_predicted",
+          "reference": 0.22231726348400116,
+          "reproduced": 0.2223172781330003,
+          "absolute_error": 1.4648999152599984e-08
+        }
+      ],
+      "reference_sha256": "027381e4906adf4e3d30d7800ad156059936ceaa5b554225a91053b6e860b440"
+    },
+    {
+      "file": "model_policies.csv",
+      "rows": 12,
+      "max_absolute_error": 1.490116116609208e-08,
+      "nonzero_differences": [
+        {
+          "row": "xgboost",
+          "column": "threshold",
+          "reference": 0.16287632286548615,
+          "reproduced": 0.16287630796432498,
+          "absolute_error": 1.490116116609208e-08
+        }
+      ],
+      "reference_sha256": "bffaa77471929f05ac4dc5a212a5fe4cb32736a49698e7675ed2bf1a53c46c2f"
+    },
+    {
+      "file": "split_summary.csv",
+      "rows": 4,
+      "max_absolute_error": 0.0,
+      "nonzero_differences": [],
+      "reference_sha256": "c83eaf45ea235bc2f5e5e7d7951db55f023fbe29964d1708c5441e3eae02df54"
+    }
+  ],
+  "scope": "Aggregate reference agreement only. Run scripts/audit.py for row-level reconstruction. This is not new external validation."
+}
