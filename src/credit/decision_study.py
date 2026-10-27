@@ -65,17 +65,32 @@ def load_rows(baseline,stage):
     return rows
 
 
+def baseline_metric_errors(old,new):
+    if set(old.index)!=set(new.index) or list(old.columns)!=list(new.columns):raise ValueError('Baseline metric schema differs')
+    new=new.reindex(old.index)
+    if not np.isfinite(new.to_numpy(float)).all():raise ValueError('Nonfinite reproduced metrics')
+    errors=(old-new).abs()
+    all_error=float(errors.to_numpy().max())
+    used_error=float(errors.loc[['woe_lr','woe_lr_sigmoid','random_forest','random_forest_sigmoid']].to_numpy().max())
+    # The unused raw XGBoost float32 path may vary at single-precision scale.
+    # Study variants must still reproduce at the stricter float64 tolerance.
+    if used_error>1e-12 or all_error>1e-7:raise ValueError('Historical metrics differ beyond declared precision')
+    return all_error,used_error
+
+
 def baseline_check(baseline):
     old=pd.read_csv(ROOT/'reports/credit/test_metrics.csv').set_index('model')
     new=pd.read_csv(baseline/'test_metrics.csv').set_index('model').reindex(old.index)
-    error=float(np.max(np.abs(old.to_numpy(float)-new.to_numpy(float))))
+    error,used_error=baseline_metric_errors(old,new)
     before=json.loads((ROOT/'reports/credit/manifest.json').read_text())
     after=json.loads((baseline/'manifest.json').read_text())
-    if error>1e-12 or before['split_manifest_sha256']!=after['split_manifest_sha256']:
+    if before['split_manifest_sha256']!=after['split_manifest_sha256']:
         raise ValueError('Historical baseline did not reproduce; review before extension')
     for name,value in before['code_sha256'].items():
         if sha(ROOT/name,True)!=value:raise ValueError('Original benchmark source changed')
-    return {'maximum_metric_difference':error,'split_manifest_sha256':after['split_manifest_sha256'],
+    return {'maximum_metric_difference':error,'maximum_study_variant_metric_difference':used_error,
+        'metric_tolerances':{'study_variants':1e-12,'all_including_unused_raw_float32_xgboost':1e-7},
+        'split_manifest_sha256':after['split_manifest_sha256'],
         'source_archive_sha256':after['source_sha256'],'runtime':after['runtime_packages'],
         'original_selected_model':after['selection']['model'],'historical_split_reused':True}
 

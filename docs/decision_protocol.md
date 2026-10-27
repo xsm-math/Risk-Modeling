@@ -5,6 +5,9 @@ split, not a fresh untouched holdout, OOT study or causal lending experiment.
 First reproduce the original benchmark in an isolated generated directory, with
 the pinned Python 3.12 requirements. Compare every historical test metric and
 the original split hash before using the private row predictions.
+The four study variants must match within 1e-12. An unused raw XGBoost float32
+path is allowed 1e-7 arithmetic variation, recorded separately rather than
+described as bit-for-bit reproduction. This does not relax the study-model gate.
 
 Two fixed base learners, WOE LR and RF, each retain raw and sigmoid versions.
 The original base models, training/calibration rows and hyperparameters stay

@@ -1,6 +1,8 @@
 import itertools
 import numpy as np
 import pytest
+import pandas as pd
+from src.credit.decision_study import baseline_metric_errors
 from src.credit.decision_rules import (hard_capacity,grouped_batches,cost_rows,
     decision_summary,order_diagnostics,paired_group_interval)
 
@@ -65,6 +67,15 @@ def test_accounting_and_empty_approval():
 def test_group_bootstrap_exact_zero_and_constant_effect():
     assert paired_group_interval([0,0,0],['a','a','b'])==(0.,0.,0.)
     assert paired_group_interval([2,2,2],['a','a','b'])==(2.,2.,2.)
+
+
+def test_baseline_reproduction_keeps_strict_tolerance_for_study_models():
+    names=['woe_lr','woe_lr_sigmoid','random_forest','random_forest_sigmoid','xgboost']
+    old=pd.DataFrame({'brier':[.2]*5},index=names);new=old.copy()
+    new.loc['xgboost','brier']+=7e-9
+    assert baseline_metric_errors(old,new)[1]==0
+    new.loc['woe_lr','brier']+=1e-8
+    with pytest.raises(ValueError):baseline_metric_errors(old,new)
 
 
 @pytest.mark.parametrize('kwargs',[{'fraction':-1},{'fraction':True},{'fraction':.5,'ratio':0},{'fraction':.5,'risk_budget':-1}])
