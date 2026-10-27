@@ -1,0 +1,14 @@
+{
+  "revision": "calibration-action-and-hard-capacity-v1",
+  "models": ["woe_lr", "woe_lr_sigmoid", "random_forest", "random_forest_sigmoid"],
+  "cost_ratios": [1, 2, 5, 10, 20.5],
+  "primary_ratio": 5,
+  "capacity_fractions": [0.5, 0.6, 0.7, 0.8, 0.9],
+  "batch_sizes": [250, 1000],
+  "batch_seed": 20261027,
+  "bootstrap_repeats": 500,
+  "bootstrap_seed": 20261028,
+  "unit_risk_rates": [0.02, 0.05],
+  "risk_capacity_fraction": 0.6,
+  "scope": "Retrospective extension of the already published historical cohort and split; no new untouched or out-of-time holdout."
+}

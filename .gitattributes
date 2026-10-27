@@ -7,3 +7,4 @@
 *.sql text eol=lf
 *.txt text eol=lf
 *.png binary
+reports/decision_study/** -text whitespace=-blank-at-eol,cr-at-eol
