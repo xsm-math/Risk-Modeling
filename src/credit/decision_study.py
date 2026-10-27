@@ -33,7 +33,8 @@ def write_csv(frame,path):
 
 def signature(p):
     return {'protocol':hashlib.sha256(json.dumps(p,sort_keys=True).encode()).hexdigest(),
-        'sources':{n:sha(ROOT/n,True) for n in SOURCE_FILES},'baseline_config':sha(ROOT/'configs/credit.json',True)}
+        'sources':{n:sha(ROOT/n,True) for n in SOURCE_FILES},'baseline_config':sha(ROOT/'configs/credit.json',True),
+        'baseline_source_reference':sha(ROOT/'configs/decision_baseline_sources.json',True)}
 
 
 def packages():
@@ -86,9 +87,11 @@ def baseline_check(baseline):
     after=json.loads((baseline/'manifest.json').read_text())
     if before['split_manifest_sha256']!=after['split_manifest_sha256']:
         raise ValueError('Historical baseline did not reproduce; review before extension')
-    for name,value in before['code_sha256'].items():
+    source_reference=json.loads((ROOT/'configs/decision_baseline_sources.json').read_text())
+    for name,value in source_reference['sources'].items():
         if sha(ROOT/name,True)!=value:raise ValueError('Original benchmark source changed')
-    return {'maximum_metric_difference':error,'maximum_study_variant_metric_difference':used_error,
+    return {'original_source_commit':source_reference['commit'],
+        'maximum_metric_difference':error,'maximum_study_variant_metric_difference':used_error,
         'metric_tolerances':{'study_variants':1e-12,'all_including_unused_raw_float32_xgboost':1e-7},
         'split_manifest_sha256':after['split_manifest_sha256'],
         'source_archive_sha256':after['source_sha256'],'runtime':after['runtime_packages'],
