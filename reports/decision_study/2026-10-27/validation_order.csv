@@ -1,0 +1,3 @@
+model,rows,raw_blocks,calibrated_blocks,nondecreasing_on_observed_rows,strict_between_observed_raw_blocks,identical_raw_ties_remain_ties,same_score_id_order
+woe_lr,2999,2695,2695,True,True,True,True
+random_forest,2999,2927,2927,True,True,True,True

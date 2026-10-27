@@ -1,6 +1,6 @@
 # Credit Risk Modeling
 
-**Statistical Learning & Risk Decision** · Quantitative Decision Science · Selected Project 02
+**Statistical Learning & Risk Decision** · Calibration, capacity and allocation
 
 ![Python: Research](https://img.shields.io/badge/Python-Research-236d91?style=flat-square) ![Focus: Statistics](https://img.shields.io/badge/Focus-Statistics-236d91?style=flat-square) ![Evidence: Reproducible](https://img.shields.io/badge/Evidence-Reproducible-258a75?style=flat-square)
 
@@ -10,18 +10,57 @@
 
 | Project Summary | Historical credit-card default modeling from interpretable scores to calibrated probabilities and cost policies. |
 |---|---|
-| Research Question | How do scorecards and tree models compare in ranking, probability quality and asymmetric risk decisions? |
-| Methods | WOE/IV logistic scorecard, six base estimators plus sigmoid variants, grouped splits/bootstrap, SQL parity, TreeSHAP and PSI diagnostics. |
-| Key Results | Validation selects **random_forest_sigmoid**: frozen-test **AUC 0.7917**, **KS 0.4580**, **Brier 0.1322**. Under the fixed 1:5 cost scenario, cost is **0.5387** per customer versus WOE **0.5600**. |
-| Evidence | [Test metrics](reports/credit/test_metrics.csv), [model policies](reports/credit/model_policies.csv), [selection](reports/credit/selection.json), [manifest](reports/credit/manifest.json). Costs are hypothetical normalized units; the published split is reused. |
+| Research Question | When do more accurate probabilities change actions, and when do current-batch constraints require allocation optimization? |
+| Methods | WOE/RF calibration, frozen cost rules, label-free hard capacities, exact unit-weight prefixes and shared-budget MILP, paired group uncertainty and row-level audits. |
+| Key Results | RF calibration leaves validation-threshold row decisions unchanged but lowers theoretical 1:5-rule cost from **.7011 to .5420**. Two hard rules have **zero violations in 1,240 batch-decision cells**. Unit-weight sorting matches MILP; the declared heterogeneous-budget primary comparison does not establish retrospective cost improvement. |
+| Evidence | [Calibration/capacity conclusions](docs/decision_results.md), [budget conclusions](docs/allocation_results.md), [frozen action comparisons](reports/decision_study/2026-10-27/action_agreement.csv), [budget effects](reports/allocation_study/2026-10-27/paired_effects.csv). Same historical cohort/split; costs and resource weights are hypothetical. |
 
-![Ranking and probability quality](assets/portfolio/summary.svg)
+![Calibration and decision costs](reports/decision_study/2026-10-27/calibration_cost.png)
+
+## Decision conclusions
+
+- **Ranking-only actions:** raw/calibrated WOE and RF give identical validation-
+  threshold memberships at all five declared cost ratios, and identical capacity-
+  filling memberships. Per-row comparisons establish this, not just equal AUC.
+- **Probability-dependent actions:** the theoretical 1:5 threshold changes 2,682
+  RF decisions after calibration and reduces hypothetical cost by .1591 per row,
+  conditional paired 95% interval [.1266,.1912]. Fixed .5 instead worsens cost.
+- **Hard operational capacities:** a validation cutoff is not a new-batch quota.
+  At 60%, it exceeds the 5,998-row batch cap by 16; the label-free hard rules
+  respect every declared batch cap. Artificial batch schemes reuse the same people.
+- **Budget allocation:** unit weights have an exact sorted-prefix solution.
+  Under hypothetical heterogeneous weights, all 480 MILPs meet resource and
+  planning-precision checks, but the primary actual-cost difference versus strong
+  PD greedy is -.001640 per row, interval [-.004152,.001030]. This supports retaining
+  simple feasible PD greedy as the practical default for this declared design.
+
+The extensions reproduce the original split and keep fixed learners. They are
+retrospective mechanism studies, not new untouched/OOT evaluations, causal
+approval profit or realized-loss guarantees. [Protocols](docs/decision_protocol.md)
+and [budget assumptions](docs/allocation_protocol.md) distinguish prediction,
+planning quality and retrospective outcomes. All 91 tests pass locally on the
+pinned Python 3.12 runtime; CI also checks published evidence hashes and ledgers.
 
 [Research report](reports/credit/REPORT.md) · [Protocol](docs/credit_protocol.md) · [Data dictionary](docs/credit_data_dictionary.md)
 
 ## Abstract
 
 **Technical audit (2026-10-21):** [Findings, fixes and 68-test verification](docs/TECHNICAL_AUDIT.md) · [Shuffled-label control](reports/audit/2026-10-21/negative_control.csv). Isolated runs include their row records and models under the chosen output.
+
+**Decision extension (2026-10-27):** [Calibration/capacity results](docs/decision_results.md)
+and [budget results](docs/allocation_results.md). Original benchmark outputs below
+remain preserved. Public-only verifiers check sources, hashes and aggregate
+constraints; private replay additionally checks row memberships and cost effects.
+
+```bash
+python scripts/verify_decisions.py --run-dir reports/decision_study/2026-10-27
+python scripts/verify_allocation.py --run-dir reports/allocation_study/2026-10-27
+```
+
+The manual `Credit calibration capacity and budget reproduction` workflow
+downloads the pinned source, refits the original benchmark, runs the two decision
+stages in order and performs full private-row verification. It publishes only
+aggregate research artifacts, leaving customer rows/model binaries local.
 
 This applied research project estimates next-month default risk for existing
 credit-card customers using 30,000 public historical records. It compares an

@@ -1,0 +1,23 @@
+{
+  "revision": "post-capacity-hypothetical-allocation-v1",
+  "models": ["random_forest", "random_forest_sigmoid"],
+  "primary_model": "random_forest_sigmoid",
+  "primary_weight": "hypothetical_heterogeneous",
+  "primary_batch_size": 250,
+  "primary_funding_fraction": 0.2,
+  "primary_risk_rate": 0.02,
+  "ratio": 5,
+  "capacity_fraction": 0.6,
+  "funding_fractions": [0.2, 0.4],
+  "risk_rates": [0.02, 0.05],
+  "weight_scenarios": ["unit", "hypothetical_heterogeneous"],
+  "weight_seed": 20261029,
+  "weight_sigma": 0.8,
+  "batch_sizes": [250, 1000],
+  "batch_seed": 20261027,
+  "time_limit": 2.0,
+  "relative_gain_gap": 0.0001,
+  "bootstrap_repeats": 500,
+  "bootstrap_seed": 20261030,
+  "scope": "Frozen follow-on after the calibration/capacity study; reused historical rows, hypothetical cost/weight/resources, no causal lending profit or future risk guarantee."
+}

@@ -1,0 +1,24 @@
+{
+  "original_source_commit": "a11dbea51059320031e88a88a4d816a280cccc63",
+  "maximum_metric_difference": 6.691252996127162e-09,
+  "maximum_study_variant_metric_difference": 1.1102230246251565e-16,
+  "metric_tolerances": {
+    "study_variants": 1e-12,
+    "all_including_unused_raw_float32_xgboost": 1e-07
+  },
+  "split_manifest_sha256": "32b014334aef52af9e3e20d9953e73db0d74617c9dae49182a67a92b032254ac",
+  "source_archive_sha256": "56c885f84457f6680f8438f02bfcdac9579323d8a94465ee5f26e32baa727602",
+  "runtime": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.8.0",
+    "scipy": "1.17.0",
+    "matplotlib": "3.10.8",
+    "xlrd": "2.0.1",
+    "joblib": "1.5.3",
+    "threadpoolctl": "3.6.0",
+    "xgboost": "3.0.2"
+  },
+  "original_selected_model": "random_forest_sigmoid",
+  "historical_split_reused": true
+}

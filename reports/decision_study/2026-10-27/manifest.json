@@ -1,0 +1,45 @@
+{
+  "signature": {
+    "protocol": "502d4f228c5ff7b302704b3dcc3bc30a0434a94f6969c78fe88af793b9b915f2",
+    "sources": {
+      "src/credit/data.py": "9287d56b1bfcae46664341714146824504d51203e32f6bc5c91ded51020df4db",
+      "src/credit/models.py": "1e4d795e153910eb8c67e18a0ffeb822f38bbb2fc256e4ee117d3c7a6732329d",
+      "src/credit/evaluation.py": "b09199cdc98049a22b372c860406dbc7c7e6a4d0c900d556bd42df55302e065b",
+      "src/credit/experiment.py": "8bb2940a9aba6e1843654d314509c5c642fb9087b5d3e236c80339f2906b900c",
+      "src/risk/features.py": "e4989ceadcd897d75f96c2c7b63627d6a086c1b4abb5bcd2e5007fedb505a6b8",
+      "src/credit/decision_rules.py": "277c7713d8ea9eed2ce9cf71cc3070862fcd5ca290b9fc530d47d581077cd04b",
+      "src/credit/decision_study.py": "bac568162e781cf1aeb38f1419679b7e0b4d5c6d6c93f8c125686fe5a9e6bdfa"
+    },
+    "baseline_config": "adc1ce40ef6a20181d5dbf6ca54c88467da66a7a88a2731a3302bfe0e75db372",
+    "baseline_source_reference": "c54313623f966677e515bdf60e7376f3f57085b9216908ca9477a6afa9b2c0f1"
+  },
+  "runtime": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.17.0",
+    "scikit-learn": "1.8.0",
+    "xgboost": "3.0.2"
+  },
+  "files": {
+    "action_agreement.csv": "b1928ffcda06441c81545bd8be431cc857fe04b764abd3e7b220dc695481d79f",
+    "baseline_reproduction.json": "a5c76068d296180c32e0a49b69e679273d145790a8a84466f97099f41382c61d",
+    "batch_decisions.csv": "d765bfb813195390f6aa50daf2bef0d4a43fe10e3aaa6493d0ff56fe1d8046a5",
+    "calibration_cost.png": "5229b9ed881f56b5e79e93069b3493f240cf91a0402a415abd2404a49b4cd796",
+    "calibration_cost.svg": "761fadbf496da43551bd37023976712fd8ea2b0a030e9ea1e5c96150dc806d39",
+    "capacity_summary.csv": "264ac396447095d04171f0eb565419c216e8dce40c4088ebaf7f350c20fbfa0c",
+    "cost_rules.csv": "c6896828f98770ee4f48152bf4090f2041e256947c7ba1036b85ffa1e17f78a7",
+    "figure_manifest.json": "aaa5a0094180c0e5471b9286a64651d3b65609b49e545733183c32b789eae317",
+    "hard_capacity.png": "0c5cc5486dd4dee4b27c76c675ffcb0ce597ea11e30abd62a17236d48a99911a",
+    "hard_capacity.svg": "a60235bf3813ab7803f166beffed22abebf5e5084375e2d0434bdb6a8625981b",
+    "paired_calibration_effects.csv": "504101e5f089cd2d50763b045df19422673985ec477722fa38eaae2b9ce9cb97",
+    "REPORT.md": "b7ddfd274f14cb9fd3bf93ed6f2c3d340f7529a544552375b8d8886f7a661147",
+    "selection.json": "fe1cc7dd534e24d25b70073aa387da1762cd246ac5edd288aacf210b63383caa",
+    "test_metrics.csv": "a37046691f67ad8372b81cc4696ed806c679d0940fd6e92c4ce52b52eef5d2f7",
+    "test_order.csv": "d5e634961f83ed4e88d0441b27333ae60d70728f360e0f0b9abb5a7896e4915f",
+    "test_verification.json": "e5a0218835d5705a867ee8a171528c8c0236bc8f230471d92eec1b6f6bc08511",
+    "unit_risk_prefix.csv": "dfd7461548e56386d8e866287ee47320eab0f04adc61e9cc492c9b505ca646dc",
+    "validation_order.csv": "73662f7d4efe3adba320446ef1701dfce2fef7a5410e7561d8a4a8f9234fe044"
+  },
+  "private_rows_published": false,
+  "historical_split_reused": true
+}

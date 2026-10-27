@@ -1,0 +1,80 @@
+{
+  "signature": {
+    "design": {
+      "revision": "post-capacity-hypothetical-allocation-v1",
+      "models": [
+        "random_forest",
+        "random_forest_sigmoid"
+      ],
+      "primary_model": "random_forest_sigmoid",
+      "primary_weight": "hypothetical_heterogeneous",
+      "primary_batch_size": 250,
+      "primary_funding_fraction": 0.2,
+      "primary_risk_rate": 0.02,
+      "ratio": 5,
+      "capacity_fraction": 0.6,
+      "funding_fractions": [
+        0.2,
+        0.4
+      ],
+      "risk_rates": [
+        0.02,
+        0.05
+      ],
+      "weight_scenarios": [
+        "unit",
+        "hypothetical_heterogeneous"
+      ],
+      "weight_seed": 20261029,
+      "weight_sigma": 0.8,
+      "batch_sizes": [
+        250,
+        1000
+      ],
+      "batch_seed": 20261027,
+      "time_limit": 2.0,
+      "relative_gain_gap": 0.0001,
+      "bootstrap_repeats": 500,
+      "bootstrap_seed": 20261030,
+      "scope": "Frozen follow-on after the calibration/capacity study; reused historical rows, hypothetical cost/weight/resources, no causal lending profit or future risk guarantee."
+    },
+    "prior_signature": {
+      "protocol": "502d4f228c5ff7b302704b3dcc3bc30a0434a94f6969c78fe88af793b9b915f2",
+      "sources": {
+        "src/credit/data.py": "9287d56b1bfcae46664341714146824504d51203e32f6bc5c91ded51020df4db",
+        "src/credit/models.py": "1e4d795e153910eb8c67e18a0ffeb822f38bbb2fc256e4ee117d3c7a6732329d",
+        "src/credit/evaluation.py": "b09199cdc98049a22b372c860406dbc7c7e6a4d0c900d556bd42df55302e065b",
+        "src/credit/experiment.py": "8bb2940a9aba6e1843654d314509c5c642fb9087b5d3e236c80339f2906b900c",
+        "src/risk/features.py": "e4989ceadcd897d75f96c2c7b63627d6a086c1b4abb5bcd2e5007fedb505a6b8",
+        "src/credit/decision_rules.py": "277c7713d8ea9eed2ce9cf71cc3070862fcd5ca290b9fc530d47d581077cd04b",
+        "src/credit/decision_study.py": "bac568162e781cf1aeb38f1419679b7e0b4d5c6d6c93f8c125686fe5a9e6bdfa"
+      },
+      "baseline_config": "adc1ce40ef6a20181d5dbf6ca54c88467da66a7a88a2731a3302bfe0e75db372",
+      "baseline_source_reference": "c54313623f966677e515bdf60e7376f3f57085b9216908ca9477a6afa9b2c0f1"
+    },
+    "prior_selection_sha256": "fe1cc7dd534e24d25b70073aa387da1762cd246ac5edd288aacf210b63383caa",
+    "prior_test_verification_sha256": "e5a0218835d5705a867ee8a171528c8c0236bc8f230471d92eec1b6f6bc08511",
+    "allocation_source": "5662c3ac2e30d93b5929a5506069ee33bcf2183f548a59b636d96caa8ab07d71",
+    "study_source": "c6a6daa0e45ef88efadb7773409fb322eef57432ab5806b97abe5d7897e7909e"
+  },
+  "runtime": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.17.0",
+    "scikit-learn": "1.8.0",
+    "xgboost": "3.0.2"
+  },
+  "files": {
+    "batch_allocations.csv": "1e6c2cbab5fea7fbe130d341247530fc7d14f49b00a888efa200a641a20d89b3",
+    "budget_effects.png": "7097df0cb64429bcd3ebc54e98b590e98f269dd18007684a0b94b6cd52549829",
+    "budget_effects.svg": "3b23230ca29c18944e5b490a19865c349f1d9319057d98692870377ce74c5b4b",
+    "figure_manifest.json": "d9efd7d7d431c5aca73d0d90761674eeb703f12c7cac997c0751e7598ddcd80b",
+    "paired_effects.csv": "33ed9d94e07ee7e5c21c6ac882539096043958919e52eca1eb0fd5f618815bc8",
+    "REPORT.md": "fb902c5327fee7c7031bd77d054c5952a54dec36a4a4d78a7b69e61d5fea028c",
+    "selection.json": "d13b80347afd1ce5496e7834180433607799ad77d26aa5fdca9997bc49194dad",
+    "summary.csv": "7ab821f9e4f66356fc228f27f643e7513bf049600653b91411a23caf4a7bd659",
+    "test_verification.json": "6aa8c0d2808161331e63cce64148df4b630a021440a0c07b145ee081fff0fba3"
+  },
+  "private_rows_published": false,
+  "weights_are_hypothetical": true
+}
