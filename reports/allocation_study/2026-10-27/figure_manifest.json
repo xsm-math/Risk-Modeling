@@ -1,0 +1,12 @@
+{
+  "script_sha256": "72f7cb1890499eea9dd2c982a05e2491c8be0088437c056c94427ac86f7cf697",
+  "descriptive_only": true,
+  "inputs": {
+    "paired_effects.csv": "33ed9d94e07ee7e5c21c6ac882539096043958919e52eca1eb0fd5f618815bc8",
+    "summary.csv": "7ab821f9e4f66356fc228f27f643e7513bf049600653b91411a23caf4a7bd659"
+  },
+  "figures": {
+    "budget_effects.png": "7097df0cb64429bcd3ebc54e98b590e98f269dd18007684a0b94b6cd52549829",
+    "budget_effects.svg": "3b23230ca29c18944e5b490a19865c349f1d9319057d98692870377ce74c5b4b"
+  }
+}

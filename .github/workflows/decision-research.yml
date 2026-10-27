@@ -1,0 +1,29 @@
+name: Credit calibration capacity and budget reproduction
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-credit-repro.txt
+      - run: python -m pytest -q
+      - run: python -m src.credit download
+      - run: python -m src.credit run --output reports/generated/decision-baseline-ci
+      - run: python -m src.credit.decision_study --baseline reports/generated/decision-baseline-ci --output reports/generated/decisions-ci
+      - run: python scripts/verify_decisions.py --run-dir reports/generated/decisions-ci --baseline reports/generated/decision-baseline-ci
+      - run: python -m src.credit.allocation_study --baseline reports/generated/decision-baseline-ci --prior reports/generated/decisions-ci --output reports/generated/allocation-ci
+      - run: python scripts/plot_decision_research.py --decision reports/generated/decisions-ci --allocation reports/generated/allocation-ci
+      - run: python scripts/verify_allocation.py --run-dir reports/generated/allocation-ci --prior reports/generated/decisions-ci --baseline reports/generated/decision-baseline-ci
+      - uses: actions/upload-artifact@v4
+        with:
+          name: credit-decision-research-aggregates
+          path: |
+            reports/generated/decisions-ci/*.*
+            reports/generated/allocation-ci/*.*

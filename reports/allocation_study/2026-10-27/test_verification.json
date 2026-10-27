@@ -1,0 +1,10 @@
+{
+  "selection_sha256": "d13b80347afd1ce5496e7834180433607799ad77d26aa5fdca9997bc49194dad",
+  "files": {
+    "batch_allocations.csv": "1e6c2cbab5fea7fbe130d341247530fc7d14f49b00a888efa200a641a20d89b3",
+    "paired_effects.csv": "33ed9d94e07ee7e5c21c6ac882539096043958919e52eca1eb0fd5f618815bc8"
+  },
+  "private_actions_sha256": "dffa6c1836aa8c6bdd0e5b6e1809f107d12f34b908060e92d5e0f83ebd7d2a4c",
+  "test_rows": 5998,
+  "no_test_reselection": true
+}

@@ -22,6 +22,9 @@ def verify(out,baseline=None):
     m=json.loads((out/'manifest.json').read_text())
     if m['signature']!=f['signature']:raise ValueError('Source manifest inconsistent')
     if any(sha(out/n)!=v for n,v in m['files'].items()):raise ValueError('Published artifact changed')
+    if (out/'figure_manifest.json').exists():
+        figure=json.loads((out/'figure_manifest.json').read_text())
+        if figure['script_sha256']!=sha(ROOT/'scripts/plot_decision_research.py',True):raise ValueError('Figure source changed')
     v=json.loads((out/'test_verification.json').read_text())
     if v['selection_sha256']!=sha(out/'selection.json'):raise ValueError('Selection changed')
     b=pd.read_csv(out/'batch_decisions.csv',float_precision='round_trip')

@@ -13,4 +13,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: pip install -r requirements-dev.txt -r requirements-credit.txt
       - run: python -m pytest -q
+      - run: python scripts/verify_decisions.py --run-dir reports/decision_study/2026-10-27
+      - run: python scripts/verify_allocation.py --run-dir reports/allocation_study/2026-10-27
       - run: python -m src.train

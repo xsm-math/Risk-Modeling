@@ -1,0 +1,14 @@
+{
+  "script_sha256": "72f7cb1890499eea9dd2c982a05e2491c8be0088437c056c94427ac86f7cf697",
+  "descriptive_only": true,
+  "inputs": {
+    "cost_rules.csv": "c6896828f98770ee4f48152bf4090f2041e256947c7ba1036b85ffa1e17f78a7",
+    "batch_decisions.csv": "d765bfb813195390f6aa50daf2bef0d4a43fe10e3aaa6493d0ff56fe1d8046a5"
+  },
+  "figures": {
+    "calibration_cost.png": "5229b9ed881f56b5e79e93069b3493f240cf91a0402a415abd2404a49b4cd796",
+    "calibration_cost.svg": "761fadbf496da43551bd37023976712fd8ea2b0a030e9ea1e5c96150dc806d39",
+    "hard_capacity.png": "0c5cc5486dd4dee4b27c76c675ffcb0ce597ea11e30abd62a17236d48a99911a",
+    "hard_capacity.svg": "a60235bf3813ab7803f166beffed22abebf5e5084375e2d0434bdb6a8625981b"
+  }
+}
