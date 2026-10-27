@@ -1,0 +1,135 @@
+{
+  "protocol": {
+    "revision": "calibration-action-and-hard-capacity-v1",
+    "models": [
+      "woe_lr",
+      "woe_lr_sigmoid",
+      "random_forest",
+      "random_forest_sigmoid"
+    ],
+    "cost_ratios": [
+      1,
+      2,
+      5,
+      10,
+      20.5
+    ],
+    "primary_ratio": 5,
+    "capacity_fractions": [
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9
+    ],
+    "batch_sizes": [
+      250,
+      1000
+    ],
+    "batch_seed": 20261027,
+    "bootstrap_repeats": 500,
+    "bootstrap_seed": 20261028,
+    "unit_risk_rates": [
+      0.02,
+      0.05
+    ],
+    "risk_capacity_fraction": 0.6,
+    "scope": "Retrospective extension of the already published historical cohort and split; no new untouched or out-of-time holdout."
+  },
+  "signature": {
+    "protocol": "502d4f228c5ff7b302704b3dcc3bc30a0434a94f6969c78fe88af793b9b915f2",
+    "sources": {
+      "src/credit/data.py": "9287d56b1bfcae46664341714146824504d51203e32f6bc5c91ded51020df4db",
+      "src/credit/models.py": "1e4d795e153910eb8c67e18a0ffeb822f38bbb2fc256e4ee117d3c7a6732329d",
+      "src/credit/evaluation.py": "b09199cdc98049a22b372c860406dbc7c7e6a4d0c900d556bd42df55302e065b",
+      "src/credit/experiment.py": "8bb2940a9aba6e1843654d314509c5c642fb9087b5d3e236c80339f2906b900c",
+      "src/risk/features.py": "e4989ceadcd897d75f96c2c7b63627d6a086c1b4abb5bcd2e5007fedb505a6b8",
+      "src/credit/decision_rules.py": "277c7713d8ea9eed2ce9cf71cc3070862fcd5ca290b9fc530d47d581077cd04b",
+      "src/credit/decision_study.py": "bac568162e781cf1aeb38f1419679b7e0b4d5c6d6c93f8c125686fe5a9e6bdfa"
+    },
+    "baseline_config": "adc1ce40ef6a20181d5dbf6ca54c88467da66a7a88a2731a3302bfe0e75db372",
+    "baseline_source_reference": "c54313623f966677e515bdf60e7376f3f57085b9216908ca9477a6afa9b2c0f1"
+  },
+  "input_hashes": {
+    "manifest.json": "ab116b1564a50e40d8bf2f1c8d4043d6dafd00f3ede85485972733dd5fe29161",
+    "selection.json": "92577912cc668a076971c2c163577a38f89da0614fd0de5da4e33a5808de4ea2",
+    "test_metrics.csv": "7831bd65ea138217e27b2b13ff1deaa5abd09ce2a57187ff6ac76afa733f9c9e",
+    "model_policies.csv": "1bfbf5884d58471ef3bd6d58df6832499a060f0e10a9dfc370e514ca755f2930",
+    "local/processed/split_manifest.csv": "32b014334aef52af9e3e20d9953e73db0d74617c9dae49182a67a92b032254ac",
+    "local/processed/validation_predictions.csv": "7f04bcb1cf2695978853d924ed0be0db68d1b711c4ab7b8a37a988c03622a550",
+    "local/processed/test_predictions.csv": "26c5cfe930cfce8438700ce4e8f6283118917afe21c97e4fcc20415f9c236871"
+  },
+  "runtime": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.17.0",
+    "scikit-learn": "1.8.0",
+    "xgboost": "3.0.2"
+  },
+  "frozen_at": "2026-10-27T06:51:34.982476+00:00",
+  "cost_thresholds": {
+    "woe_lr": {
+      "1": 0.43404809651296333,
+      "2": 0.33507804790628065,
+      "5": 0.16803929866668457,
+      "10": 0.1237299724669015,
+      "20.5": 0.0690336649412998
+    },
+    "woe_lr_sigmoid": {
+      "1": 0.4267556104880614,
+      "2": 0.3315462858614954,
+      "5": 0.17004326034554698,
+      "10": 0.1265849840200243,
+      "20.5": 0.07213766970527787
+    },
+    "random_forest": {
+      "1": 0.6840681922746467,
+      "2": 0.5280101547226647,
+      "5": 0.4017338159594516,
+      "10": 0.2487922273399809,
+      "20.5": 0.18442251255886033
+    },
+    "random_forest_sigmoid": {
+      "1": 0.414821883192509,
+      "2": 0.2614136138677165,
+      "5": 0.17143843744366105,
+      "10": 0.08957103491876472,
+      "20.5": 0.06178919882131392
+    }
+  },
+  "capacity_thresholds": {
+    "woe_lr": {
+      "0.5": 0.14635887100423628,
+      "0.6": 0.16619690058469966,
+      "0.7": 0.2104116397458273,
+      "0.8": 0.32636385412114494,
+      "0.9": 0.5543341534244284
+    },
+    "woe_lr_sigmoid": {
+      "0.5": 0.1488337990150919,
+      "0.6": 0.16824442758375982,
+      "0.7": 0.21126425218182895,
+      "0.8": 0.32316335242331695,
+      "0.9": 0.5430183809024397
+    },
+    "random_forest": {
+      "0.5": 0.36916110619474124,
+      "0.6": 0.41920184960889234,
+      "0.7": 0.4851999052774283,
+      "0.8": 0.6272048673333663,
+      "0.9": 0.7846960710802631
+    },
+    "random_forest_sigmoid": {
+      "0.5": 0.15185034768906583,
+      "0.6": 0.18249513771212186,
+      "0.7": 0.2281329567157049,
+      "0.8": 0.3521921032450713,
+      "0.9": 0.550727381469602
+    }
+  },
+  "tie_rule": "Hard capacity: ascending PD then immutable ID; may split equal-score blocks. Historical thresholds keep complete blocks.",
+  "validation_files": {
+    "validation_order.csv": "73662f7d4efe3adba320446ef1701dfce2fef7a5410e7561d8a4a8f9234fe044",
+    "baseline_reproduction.json": "a5c76068d296180c32e0a49b69e679273d145790a8a84466f97099f41382c61d"
+  }
+}

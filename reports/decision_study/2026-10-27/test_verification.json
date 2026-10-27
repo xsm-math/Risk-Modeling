@@ -1,0 +1,16 @@
+{
+  "selection_sha256": "fe1cc7dd534e24d25b70073aa387da1762cd246ac5edd288aacf210b63383caa",
+  "files": {
+    "test_metrics.csv": "a37046691f67ad8372b81cc4696ed806c679d0940fd6e92c4ce52b52eef5d2f7",
+    "cost_rules.csv": "c6896828f98770ee4f48152bf4090f2041e256947c7ba1036b85ffa1e17f78a7",
+    "batch_decisions.csv": "d765bfb813195390f6aa50daf2bef0d4a43fe10e3aaa6493d0ff56fe1d8046a5",
+    "test_order.csv": "d5e634961f83ed4e88d0441b27333ae60d70728f360e0f0b9abb5a7896e4915f",
+    "paired_calibration_effects.csv": "504101e5f089cd2d50763b045df19422673985ec477722fa38eaae2b9ce9cb97",
+    "action_agreement.csv": "b1928ffcda06441c81545bd8be431cc857fe04b764abd3e7b220dc695481d79f",
+    "unit_risk_prefix.csv": "dfd7461548e56386d8e866287ee47320eab0f04adc61e9cc492c9b505ca646dc"
+  },
+  "private_actions_sha256": "72881146ccb344264c33fea9700057612ef0db34569d07cde90ee4993511be03",
+  "test_rows": 5998,
+  "same_historical_split": true,
+  "no_test_reselection": true
+}
